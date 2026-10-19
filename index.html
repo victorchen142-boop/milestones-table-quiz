@@ -1,0 +1,1188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Milestones Table Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f7f4ee;
+        --surface: #fffdf9;
+        --surface-2: #f1ece2;
+        --ink: #1d2733;
+        --ink-soft: #55606c;
+        --line: #ddd5c6;
+        --line-strong: #c9bfa9;
+        --accent: #0f766e;
+        --accent-ink: #ffffff;
+        --good: #1e7d32;
+        --good-bg: #e3f2e4;
+        --bad: #b3261e;
+        --bad-bg: #fbe7e4;
+        --revealed-bg: #fdf3d7;
+        --revealed-ink: #7a5b00;
+        --focus: #0f766e;
+        --shadow: 0 1px 2px rgba(29, 39, 51, 0.06), 0 8px 24px rgba(29, 39, 51, 0.06);
+        --d-gross: #e8f1f8;
+        --d-fine: #fdf0dc;
+        --d-lang: #fbe9e7;
+        --d-social: #e6f3e6;
+        --d-gross-ink: #1d5b86;
+        --d-fine-ink: #8a5a00;
+        --d-lang-ink: #9c3a2e;
+        --d-social-ink: #2e6b2e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #14181d;
+          --surface: #1c2129;
+          --surface-2: #232a34;
+          --ink: #e8ecf1;
+          --ink-soft: #9aa6b2;
+          --line: #333c47;
+          --line-strong: #46525f;
+          --accent: #2dd4bf;
+          --accent-ink: #0b1512;
+          --good: #7bd88a;
+          --good-bg: #1e3524;
+          --bad: #ff9d94;
+          --bad-bg: #40231f;
+          --revealed-bg: #3a3115;
+          --revealed-ink: #f0d488;
+          --focus: #2dd4bf;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+          --d-gross: #1d2c3a;
+          --d-fine: #3a2f18;
+          --d-lang: #3a2320;
+          --d-social: #1f3320;
+          --d-gross-ink: #9cc8e8;
+          --d-fine-ink: #eec27a;
+          --d-lang-ink: #f0a79c;
+          --d-social-ink: #a3d8a3;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+        font-size: 16px;
+        line-height: 1.45;
+      }
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 16px 64px; }
+
+      header.intro { padding: 10px 2px 14px; }
+      header.intro h1 {
+        font-family: "IBM Plex Serif", Georgia, serif;
+        font-size: clamp(26px, 4.5vw, 38px);
+        line-height: 1.12;
+        margin: 0 0 8px;
+        letter-spacing: -0.01em;
+      }
+      header.intro p { margin: 0; color: var(--ink-soft); max-width: 62ch; }
+      header.intro p strong { color: var(--ink); }
+
+      .hud {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        padding: 12px 14px;
+        margin: 14px 0 18px;
+      }
+      .hud-top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 18px;
+      }
+      .score {
+        font-size: 22px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .score small { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+      .stat {
+        font-size: 14px;
+        color: var(--ink-soft);
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+      .stat b { color: var(--ink); font-weight: 600; }
+      .hud-actions { margin-left: auto; display: flex; flex-wrap: wrap; gap: 8px; }
+      button {
+        font: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid var(--line-strong);
+        background: var(--surface-2);
+        color: var(--ink);
+        border-radius: 8px;
+        padding: 8px 14px;
+        cursor: pointer;
+        min-height: 40px;
+      }
+      button:hover { border-color: var(--ink-soft); }
+      button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+      button.primary:hover { filter: brightness(1.08); }
+      button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+      .bar {
+        margin-top: 10px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        overflow: hidden;
+      }
+      .bar > div {
+        height: 100%;
+        width: 0%;
+        background: var(--accent);
+        transition: width 0.35s ease;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .bar > div { transition: none; }
+        .shake { animation: none !important; }
+        .age-toggle .chev { transition: none; }
+      }
+
+      .banner {
+        display: none;
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin: 0 0 18px;
+        border: 1px solid var(--line-strong);
+        background: var(--good-bg);
+        color: var(--ink);
+      }
+      .banner.show { display: block; }
+      .banner.revealed { background: var(--revealed-bg); }
+      .banner h2 { margin: 0 0 4px; font-size: 20px; font-family: "IBM Plex Serif", Georgia, serif; }
+      .banner p { margin: 0; color: var(--ink-soft); }
+      .banner p b { color: var(--ink); }
+
+      .table-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      /* Collapsible per-age milestone sections */
+      .age-section {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+      .age-section.section-hidden { display: none; }
+      .age-head { margin: 0; }
+      button.age-toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        text-align: left;
+        background: var(--surface-2);
+        border: none;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        padding: 12px 14px;
+        font-size: 17px;
+        min-height: 48px;
+      }
+      button.age-toggle:hover { border-color: var(--line); }
+      .age-toggle .chev { font-size: 13px; color: var(--ink-soft); transition: transform 0.2s ease; }
+      .age-section.collapsed .age-toggle .chev { transform: rotate(-90deg); }
+      .age-section.collapsed .age-body { display: none; }
+      .age-progress {
+        margin-left: auto;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--ink-soft);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+
+      /* Vaccines section */
+      col.mnemonic { width: 30%; }
+      .vax-title {
+        font-family: "IBM Plex Serif", Georgia, serif;
+        font-size: clamp(22px, 3.5vw, 28px);
+        margin: 30px 2px 6px;
+      }
+      .vax-sub { margin: 0 2px 14px; color: var(--ink-soft); max-width: 62ch; }
+      #vaxTable th.age-cell { white-space: normal; }
+      .none-mark { color: var(--ink-soft); }
+      td .domain-label.vax-label { color: var(--ink-soft); }
+      .recall-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        padding: 14px 16px;
+        margin-top: 16px;
+      }
+      .recall-card h3 { margin: 0 0 8px; font-size: 15px; }
+      .recall-row { display: flex; gap: 14px; padding: 4px 0; font-size: 14.5px; }
+      .recall-row + .recall-row { border-top: 1px solid var(--line); }
+      .recall-age { font-weight: 700; flex: 0 0 92px; }
+      table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+      col.age { width: 96px; }
+      thead th {
+        text-align: left;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 12px 12px;
+        border-bottom: 2px solid var(--line-strong);
+        vertical-align: bottom;
+      }
+      thead th.age-h { background: var(--surface-2); color: var(--ink-soft); }
+      th.d-gross { background: var(--d-gross); color: var(--d-gross-ink); }
+      th.d-fine { background: var(--d-fine); color: var(--d-fine-ink); }
+      th.d-lang { background: var(--d-lang); color: var(--d-lang-ink); }
+      th.d-social { background: var(--d-social); color: var(--d-social-ink); }
+      tbody th.age-cell {
+        text-align: left;
+        vertical-align: top;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 14px 12px;
+        background: var(--surface-2);
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap;
+      }
+      tbody th.age-cell .count {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-soft);
+        margin-top: 2px;
+        white-space: normal;
+      }
+      tbody td {
+        vertical-align: top;
+        padding: 10px 10px 12px;
+        border-bottom: 1px solid var(--line);
+        border-left: 1px solid var(--line);
+      }
+      tbody tr:last-child th, tbody tr:last-child td { border-bottom: none; }
+      td .domain-label { display: none; }
+
+      .blank { margin: 0 0 8px; }
+      .blank:last-child { margin-bottom: 0; }
+      .blank input {
+        width: 100%;
+        font: inherit;
+        font-size: 15px;
+        padding: 9px 10px;
+        border: 1.5px dashed var(--line-strong);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--ink);
+        min-height: 42px;
+      }
+      .blank input::placeholder { color: var(--ink-soft); opacity: 0.75; }
+      .blank input:focus { outline: 2px solid var(--focus); outline-offset: 1px; border-style: solid; }
+      .blank.correct input {
+        border: 1.5px solid var(--good);
+        background: var(--good-bg);
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .blank.revealed input {
+        border: 1.5px solid var(--revealed-ink);
+        background: var(--revealed-bg);
+        color: var(--revealed-ink);
+        font-weight: 600;
+      }
+      .blank.wrong input {
+        border: 1.5px solid var(--bad);
+        background: var(--bad-bg);
+      }
+      .shake { animation: shake 0.3s ease; }
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        75% { transform: translateX(4px); }
+      }
+      .answer-note {
+        display: none;
+        font-size: 13px;
+        color: var(--bad);
+        margin-top: 4px;
+      }
+      .blank.wrong .answer-note { display: block; }
+      .blank.revealed .answer-note { display: block; color: var(--revealed-ink); }
+
+      .mode-switch { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; }
+      .mode-switch button { border: none; border-radius: 0; }
+      .mode-switch button + button { border-left: 1px solid var(--line-strong); }
+      .blank.hidden-blank { display: none; }
+
+      footer.note { margin-top: 16px; color: var(--ink-soft); font-size: 13.5px; }
+
+      /* Phone: stack each age row into a card; domain becomes a label above its blanks. */
+      @media (max-width: 720px) {
+        .wrap { padding: 14px 10px 48px; }
+        .table-card { border: none; box-shadow: none; background: transparent; overflow: visible; }
+        table, tbody, tr, td { display: block; width: 100%; }
+        thead { display: none; }
+        #vaxTable tbody tr {
+          background: var(--surface);
+          border: 1px solid var(--line);
+          border-radius: 12px;
+          box-shadow: var(--shadow);
+          margin-bottom: 14px;
+          overflow: hidden;
+        }
+        tbody th.age-cell {
+          display: block;
+          width: 100%;
+          font-size: 17px;
+          padding: 12px 14px;
+          border-bottom: 1px solid var(--line);
+        }
+        tbody th.age-cell .count { display: inline; margin-left: 8px; }
+        tbody td { border: none; border-bottom: 1px solid var(--line); padding: 12px 14px 14px; }
+        tbody tr td:last-child { border-bottom: none; }
+        td.cell-empty { display: none; }
+        td .domain-label {
+          display: block;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          margin-bottom: 8px;
+        }
+        td.d-gross .domain-label { color: var(--d-gross-ink); }
+        td.d-fine .domain-label { color: var(--d-fine-ink); }
+        td.d-lang .domain-label { color: var(--d-lang-ink); }
+        td.d-social .domain-label { color: var(--d-social-ink); }
+        .hud-actions { margin-left: 0; }
+        .hud-actions button { flex: 1 1 auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="intro">
+        <h1>Developmental Milestones — Fill in the Table</h1>
+        <p>
+          The full milestones chart, <strong>2 months to 5 years</strong>, with every milestone
+          blanked out — one collapsible table per age, so you can fold away the ages you've got
+          down; each age header shows your progress for that age. Below the milestones, the
+          <strong>pediatric vaccine schedule</strong> is blanked out the same way, mnemonics
+          included. Type each answer from memory — answers check as you type, and you don't need
+          the chart's exact words: an approximate phrasing in your own words counts as long as the
+          key ideas are there. If a cell has more than one blank, its milestones can go in
+          any order — each one just has to appear once in that cell. <strong>Enter</strong>
+          jumps to the next blank. Or switch to <strong>High yield only</strong> to drill just
+          the 45 milestones your Anki deck has dedicated cards for — that toggle scopes the
+          milestones only; the vaccines always show the full schedule.
+        </p>
+      </header>
+
+      <div class="hud" role="region" aria-label="Quiz progress and controls">
+        <div class="hud-top">
+          <div class="score"><span id="scoreNum">0</span> <small>/ 83 correct</small></div>
+          <div class="stat">Time <b id="timer">0:00</b></div>
+          <div class="stat">Mistakes <b id="mistakes">0</b></div>
+          <div class="hud-actions">
+            <div class="mode-switch" role="group" aria-label="Quiz mode">
+              <button id="modeAll" type="button" aria-pressed="true">All milestones</button>
+              <button id="modeHY" type="button" aria-pressed="false">High yield only</button>
+            </div>
+            <button id="hintBtn" type="button" aria-pressed="false">Hints</button>
+            <button id="checkBtn" type="button">Check all</button>
+            <button id="revealBtn" type="button">Reveal answers</button>
+            <button id="resetBtn" type="button" class="primary">Restart</button>
+          </div>
+        </div>
+        <div class="bar" aria-hidden="true"><div id="barFill"></div></div>
+      </div>
+
+      <div class="banner" id="banner" role="status">
+        <h2 id="bannerTitle"></h2>
+        <p id="bannerText"></p>
+      </div>
+
+      <div id="milestoneSections"></div>
+
+      <section class="vax-section" aria-label="Pediatric vaccine schedule quiz">
+        <h2 class="vax-title">Vaccines — Pediatric Schedule</h2>
+        <p class="vax-sub">
+          Same drill: every vaccine due at each age is blanked out — any order within the
+          row — plus the row's mnemonic where the chart has one. These count toward your
+          score in both modes.
+        </p>
+        <div class="table-card">
+          <table id="vaxTable" aria-label="Pediatric vaccine schedule with blanked-out vaccines">
+            <colgroup>
+              <col class="age" />
+              <col />
+              <col class="mnemonic" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th class="age-h" scope="col">Age</th>
+                <th class="age-h" scope="col">Vaccines due</th>
+                <th class="age-h" scope="col">Mnemonic</th>
+              </tr>
+            </thead>
+            <tbody id="vaxTbody"></tbody>
+          </table>
+        </div>
+        <div class="recall-card">
+          <h3>Ultra-quick recall</h3>
+          <div class="recall-row"><span class="recall-age">Birth</span><span>Hep B</span></div>
+          <div class="recall-row"><span class="recall-age">2 mo</span><span>B Dr. HIP</span></div>
+          <div class="recall-row"><span class="recall-age">4 mo</span><span>Dr. HIP</span></div>
+          <div class="recall-row"><span class="recall-age">6 mo</span><span>B Dr. HIP + Flu</span></div>
+          <div class="recall-row"><span class="recall-age">12–15 mo</span><span>MMR + Varicella + Hep A + Hib/PCV boosters</span></div>
+          <div class="recall-row"><span class="recall-age">15–18 mo</span><span>DTaP #4</span></div>
+          <div class="recall-row"><span class="recall-age">4–6 yr</span><span>Very DIM</span></div>
+        </div>
+      </section>
+
+      <footer class="note">
+        Milestones transcribed from your Developmental Milestones chart (the one in your
+        Last-Minute Review doc). Checking is forgiving: case and punctuation don't matter,
+        shorter chart phrasings like “tripod position” or “coos” are accepted, and paraphrases
+        count too — “lifts head on tummy” or “raises chest from prone” both fill the first blank,
+        and “turns to voice” counts for “responds to voice”.
+        Within a single cell, order doesn't matter: any of that cell's milestones is accepted in
+        any of its blanks, and each one counts only once per cell. Vaccine schedule from the
+        vaccine chart in the same doc; within a vaccine row the shots can go in any order, and
+        simple forms count — “flu” for influenza, “chicken pox” for varicella.
+        Check all only flags what's wrong — it never shows an answer. On Reveal, anything
+        already typed stays in its blank and the correct answer appears underneath it.
+      </footer>
+    </div>
+
+    <script>
+      var MILESTONES = [{"age": "2 months", "domain": "Gross motor", "text": "Lifts head/chest in prone position", "aliases": []}, {"age": "2 months", "domain": "Fine motor", "text": "Hands unfisted 50% of the time", "aliases": []}, {"age": "2 months", "domain": "Language", "text": "Alerts to voice/sound", "aliases": []}, {"age": "2 months", "domain": "Language", "text": "Makes noises", "aliases": []}, {"age": "2 months", "domain": "Social/Cognitive", "text": "Social smile", "aliases": []}, {"age": "2 months", "domain": "Social/Cognitive", "text": "Recognizes parents", "aliases": []}, {"age": "2 months", "domain": "Social/Cognitive", "text": "Eyes track past midline", "aliases": []}, {"age": "4 months", "domain": "Gross motor", "text": "Head control", "aliases": []}, {"age": "4 months", "domain": "Gross motor", "text": "Props up on forearms", "aliases": []}, {"age": "4 months", "domain": "Fine motor", "text": "Brings hands to midline/mouth", "aliases": []}, {"age": "4 months", "domain": "Fine motor", "text": "Holds objects if placed in palm", "aliases": []}, {"age": "4 months", "domain": "Language", "text": "Responds to voice", "aliases": []}, {"age": "4 months", "domain": "Language", "text": "Coos (vowel sounds)", "aliases": ["coos"]}, {"age": "4 months", "domain": "Social/Cognitive", "text": "Enjoys looking around (at hands, at objects)", "aliases": ["enjoys looking around"]}, {"age": "6 months", "domain": "Gross motor", "text": "Sits momentarily propped on hands (tripod position)", "aliases": ["sits momentarily propped on hands", "tripod position", "tripod sitting"]}, {"age": "6 months", "domain": "Gross motor", "text": "Rolls over", "aliases": []}, {"age": "6 months", "domain": "Fine motor", "text": "Reaches for toys", "aliases": []}, {"age": "6 months", "domain": "Fine motor", "text": "Puts objects in mouth", "aliases": []}, {"age": "6 months", "domain": "Language", "text": "Vocalizes (squeals, blows raspberries)", "aliases": ["vocalizes", "squeals", "blows raspberries"]}, {"age": "6 months", "domain": "Social/Cognitive", "text": "Laughs", "aliases": []}, {"age": "6 months", "domain": "Social/Cognitive", "text": "Recognizes familiar faces", "aliases": []}, {"age": "9 months", "domain": "Gross motor", "text": "Sits independently", "aliases": []}, {"age": "9 months", "domain": "Fine motor", "text": "Raking grasp", "aliases": []}, {"age": "9 months", "domain": "Fine motor", "text": "Transfers objects hand to hand", "aliases": []}, {"age": "9 months", "domain": "Language", "text": "Babbles (consonant sounds)", "aliases": ["babbles"]}, {"age": "9 months", "domain": "Language", "text": "Responds to name", "aliases": []}, {"age": "9 months", "domain": "Social/Cognitive", "text": "Stranger anxiety", "aliases": []}, {"age": "9 months", "domain": "Social/Cognitive", "text": "Separation anxiety", "aliases": []}, {"age": "1 year", "domain": "Gross motor", "text": "Pulls to stand", "aliases": []}, {"age": "1 year", "domain": "Gross motor", "text": "Cruises", "aliases": []}, {"age": "1 year", "domain": "Fine motor", "text": "Pincer grasp", "aliases": []}, {"age": "1 year", "domain": "Language", "text": "Says \"mama\" or \"dada\"", "aliases": ["says mama or dada", "says mama dada", "mama dada"]}, {"age": "1 year", "domain": "Language", "text": "Waves \"bye\"", "aliases": ["waves bye", "waves"]}, {"age": "1 year", "domain": "Language", "text": "Understands \"no\"", "aliases": ["understands no"]}, {"age": "1 year", "domain": "Social/Cognitive", "text": "Plays \"pat-a-cake\"", "aliases": ["plays pat a cake", "pat a cake", "patacake"]}, {"age": "1 year", "domain": "Social/Cognitive", "text": "Looks for hidden object", "aliases": []}, {"age": "15 months", "domain": "Gross motor", "text": "Takes a few steps independently", "aliases": ["takes a few steps", "walks a few steps independently"]}, {"age": "15 months", "domain": "Fine motor", "text": "Stacks 2 blocks", "aliases": ["stacks two blocks"]}, {"age": "15 months", "domain": "Language", "text": "Says 1 or 2 words (plus \"mama\" & \"dada\")", "aliases": ["says 1 or 2 words", "says one or two words"]}, {"age": "15 months", "domain": "Social/Cognitive", "text": "Follows 1-step command with gesture", "aliases": ["follows one step command with gesture"]}, {"age": "15 months", "domain": "Social/Cognitive", "text": "Points to get something", "aliases": []}, {"age": "15 months", "domain": "Social/Cognitive", "text": "Shows affection", "aliases": []}, {"age": "18 months", "domain": "Gross motor", "text": "Walks easily", "aliases": []}, {"age": "18 months", "domain": "Gross motor", "text": "Climbs on/off furniture", "aliases": ["climbs on and off furniture"]}, {"age": "18 months", "domain": "Fine motor", "text": "Scribbles", "aliases": []}, {"age": "18 months", "domain": "Fine motor", "text": "Feeds with fingers", "aliases": []}, {"age": "18 months", "domain": "Language", "text": "Says 3 or more words (plus \"mama\" & \"dada\")", "aliases": ["says 3 or more words", "says three or more words"]}, {"age": "18 months", "domain": "Social/Cognitive", "text": "Follows 1-step command without gesture", "aliases": ["follows one step command without gesture"]}, {"age": "18 months", "domain": "Social/Cognitive", "text": "Imitates caregiver", "aliases": []}, {"age": "2 years", "domain": "Gross motor", "text": "Runs", "aliases": []}, {"age": "2 years", "domain": "Gross motor", "text": "Kicks ball", "aliases": []}, {"age": "2 years", "domain": "Gross motor", "text": "Walks up stairs", "aliases": []}, {"age": "2 years", "domain": "Fine motor", "text": "Uses spoon", "aliases": []}, {"age": "2 years", "domain": "Language", "text": "Says 2-word phrases", "aliases": ["says two word phrases"]}, {"age": "2 years", "domain": "Social/Cognitive", "text": "Knows 2 body parts", "aliases": ["knows two body parts"]}, {"age": "2 years", "domain": "Social/Cognitive", "text": "Parallel play", "aliases": []}, {"age": "30 months", "domain": "Gross motor", "text": "Jumps", "aliases": []}, {"age": "30 months", "domain": "Fine motor", "text": "Removes clothes", "aliases": []}, {"age": "30 months", "domain": "Fine motor", "text": "Turns pages", "aliases": []}, {"age": "30 months", "domain": "Language", "text": "Says 50 or more words", "aliases": ["says fifty or more words"]}, {"age": "30 months", "domain": "Social/Cognitive", "text": "Follows 2-step command", "aliases": ["follows two step command"]}, {"age": "30 months", "domain": "Social/Cognitive", "text": "Identifies 1 color correctly", "aliases": ["identifies one color correctly", "names one color"]}, {"age": "3 years", "domain": "Gross motor", "text": "Walks up stairs alternating feet", "aliases": []}, {"age": "3 years", "domain": "Gross motor", "text": "Rides tricycle", "aliases": []}, {"age": "3 years", "domain": "Fine motor", "text": "Dresses with help", "aliases": []}, {"age": "3 years", "domain": "Fine motor", "text": "Uses fork", "aliases": []}, {"age": "3 years", "domain": "Fine motor", "text": "Copies circle", "aliases": []}, {"age": "3 years", "domain": "Language", "text": "Says 3-word or longer sentences", "aliases": ["says three word or longer sentences", "says 3 word sentences"]}, {"age": "3 years", "domain": "Language", "text": "Speech 75% intelligible", "aliases": ["speech 75 percent intelligible"]}, {"age": "3 years", "domain": "Social/Cognitive", "text": "Knows age/sex", "aliases": ["knows age and sex"]}, {"age": "3 years", "domain": "Social/Cognitive", "text": "Cooperative play", "aliases": []}, {"age": "4 years", "domain": "Gross motor", "text": "Catches large ball", "aliases": []}, {"age": "4 years", "domain": "Fine motor", "text": "Tripod pencil grasp", "aliases": []}, {"age": "4 years", "domain": "Language", "text": "Says 4-word or longer sentences", "aliases": ["says four word or longer sentences", "says 4 word sentences"]}, {"age": "4 years", "domain": "Language", "text": "Names colors", "aliases": []}, {"age": "4 years", "domain": "Social/Cognitive", "text": "Imaginative play", "aliases": []}, {"age": "5 years", "domain": "Gross motor", "text": "Hops on 1 foot", "aliases": ["hops on one foot"]}, {"age": "5 years", "domain": "Fine motor", "text": "Buttons clothes", "aliases": []}, {"age": "5 years", "domain": "Fine motor", "text": "Writes some letters", "aliases": []}, {"age": "5 years", "domain": "Language", "text": "Speech 100% intelligible", "aliases": ["speech 100 percent intelligible"]}, {"age": "5 years", "domain": "Language", "text": "Counts to 10", "aliases": ["counts to ten"]}, {"age": "5 years", "domain": "Language", "text": "Speaks in full sentences", "aliases": []}, {"age": "5 years", "domain": "Social/Cognitive", "text": "Understands rules and taking turns", "aliases": []}];
+      var DOMAINS = ["Gross motor", "Fine motor", "Language", "Social/Cognitive"];
+      var DOMAIN_CLASS = {
+        "Gross motor": "d-gross",
+        "Fine motor": "d-fine",
+        "Language": "d-lang",
+        "Social/Cognitive": "d-social"
+      };
+      var TOTAL = MILESTONES.length;
+
+      // High-yield subset: the milestones Victor's Anki collection (AnKing Step
+      // Deck) has dedicated cards for — "By what age…", "What milestones are
+      // expected in a X-month-old…", reverse milestone→age cards, and age-bundle
+      // mnemonic cards. Matched to the chart by exact text.
+      var HIGH_YIELD = {};
+      ["Lifts head/chest in prone position", "Makes noises", "Social smile", "Head control", "Responds to voice", "Sits momentarily propped on hands (tripod position)", "Reaches for toys", "Vocalizes (squeals, blows raspberries)", "Rolls over", "Laughs", "Transfers objects hand to hand", "Raking grasp", "Stranger anxiety", "Separation anxiety", "Sits independently", "Pulls to stand", "Cruises", "Pincer grasp", "Says \"mama\" or \"dada\"", "Looks for hidden object", "Takes a few steps independently", "Points to get something", "Says 1 or 2 words (plus \"mama\" & \"dada\")", "Stacks 2 blocks", "Walks easily", "Feeds with fingers", "Says 3 or more words (plus \"mama\" & \"dada\")", "Kicks ball", "Walks up stairs", "Uses spoon", "Parallel play", "Says 2-word phrases", "Runs", "Says 50 or more words", "Knows age/sex", "Copies circle", "Rides tricycle", "Cooperative play", "Says 3-word or longer sentences", "Uses fork", "Imaginative play", "Catches large ball", "Names colors", "Tripod pencil grasp", "Hops on 1 foot"].forEach(function (t) { HIGH_YIELD[t] = true; });
+      MILESTONES.forEach(function (m) { m.hy = !!HIGH_YIELD[m.text]; });
+
+      // ---------- Answer matching ----------
+      var NUMWORDS = {
+        one: "1", two: "2", three: "3", four: "4", five: "5", six: "6",
+        seven: "7", eight: "8", nine: "9", ten: "10", fifty: "50",
+        percent: "%"
+      };
+      function normalize(s) {
+        var t = String(s || "").toLowerCase();
+        t = t.replace(/&/g, " and ");
+        t = t.replace(/["'’‘“”.,;:!?\/\\()-]/g, " ");
+        t = t.replace(/\s+/g, " ").trim();
+        t = t.split(" ").map(function (w) { return NUMWORDS[w] || w; }).join(" ");
+        return t;
+      }
+      function variantsFor(m) {
+        var out = [];
+        var raw = [m.text].concat(m.aliases || []);
+        raw.forEach(function (r) {
+          out.push(normalize(r));
+          // Also accept the text without its parenthetical, and the parenthetical alone.
+          var noParen = r.replace(/\([^)]*\)/g, " ");
+          out.push(normalize(noParen));
+          var paren = r.match(/\(([^)]*)\)/);
+          if (paren) out.push(normalize(paren[1]));
+        });
+        return out.filter(function (v, i) { return v && out.indexOf(v) === i; });
+      }
+      function editDistance(a, b) {
+        var m = a.length, n = b.length;
+        if (Math.abs(m - n) > 2) return 99;
+        var prev = [], cur = [], i, j;
+        for (j = 0; j <= n; j++) prev[j] = j;
+        for (i = 1; i <= m; i++) {
+          cur[0] = i;
+          for (j = 1; j <= n; j++) {
+            var cost = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+            cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost);
+          }
+          var tmp = prev; prev = cur; cur = tmp;
+        }
+        return prev[n];
+      }
+      // ---------- Tier 2: approximate-phrasing keyword matching ----------
+      // Keyword groups per answer (parallel to MILESTONES) plus a synonym table.
+      // An answer counts when at least `m` of its groups have a token present
+      // in the typed text after normalization — paraphrases in your own words pass.
+      var KW_SYNONYMS = {"lift":["raise","raises","lifts","lifting","raising"],"prone":["tummy","stomach","belly"],"head":[],"unfist":["unfists","unclench","open","opens","opening","opened","unfisted"],"alert":["alerts","startle","startles","startling"],"noise":["noises","sound","sounds"],"voice":["voices"],"make":["makes","making","made"],"smile":["smiles","smiling","smiled"],"laugh":["laughs","laughing","laughed","giggle","giggles","giggling"],"recognize":["recognizes","recognises","know","knows","knew"],"parent":["parents","mom","dad","mother","father","mommy","daddy"],"eye":["eyes"],"track":["tracks","tracking","follow","follows","following","followed"],"midline":[],"control":["controls","controlled"],"forearm":["forearms"],"prop":["props","propping","propped"],"bring":["brings","bringing","brought"],"hand":["hands"],"mouth":[],"palm":["palms"],"hold":["holds","holding","held"],"object":["objects","toy","toys","thing","things"],"respond":["responds","responding","responded"],"coo":["coos","cooing","goo","goos"],"look":["looks","looking","looked","watch","watches","watching","gaze","gazes"],"around":[],"sit":["sits","sitting","sat"],"tripod":[],"roll":["rolls","rolling","rolled"],"reach":["reaches","reaching","reached","grab","grabs","grabbing","grabbed"],"vocalize":["vocalizes","vocalizing"],"squeal":["squeals","squealing"],"raspberry":["raspberries"],"familiar":[],"face":["faces"],"independent":["independently","alone"],"rake":["raking","raked"],"grasp":["grasps","grasping","grasped"],"transfer":["transfers","transferring","transferred","pass","passes","passing","passed","move","moves","moving","moved"],"babble":["babbles","babbling","babbled"],"name":["names","named","naming"],"stranger":["strangers"],"separation":[],"pull":["pulls","pulling","pulled"],"stand":["stands","standing","stood"],"cruise":["cruises","cruising","cruised"],"pincer":[],"say":["says","saying","said"],"speak":["speaks","speaking","spoke","spoken","talk","talks","talking","talked"],"mama":["momma"],"dada":["daddy"],"wave":["waves","waving","waved"],"bye":[],"understand":["understands","understanding","understood"],"no":[],"patacake":["pattycake"],"hidden":["hides","hiding","hid"],"take":["takes","taking","took","taken"],"step":["steps"],"few":[],"stack":["stacks","stacking","stacked"],"block":["blocks"],"word":["words"],"gesture":["gestures"],"point":["points","pointing","pointed"],"affection":["hug","hugs","hugging","hugged","kiss","kisses","kissing","kissed","cuddle","cuddles","love","loves","loving","loved"],"walk":["walks","walking","walked"],"easy":["easily","well"],"climb":["climbs","climbing","climbed"],"furniture":["couch","couches","chair","chairs","bed","beds","sofa","sofas","table","tables"],"scribble":["scribbles","scribbling","scribbled","draw","draws","drawing","drew","drawn"],"feed":["feeds","feeding","fed","eat","eats","eating","ate","eaten"],"finger":["fingers"],"imitate":["imitates","imitating","imitated","copy","copies","copying","copied","mimic","mimics","mimicking","mimicked"],"run":["runs","running","ran"],"kick":["kicks","kicking","kicked"],"ball":["balls"],"spoon":["spoons"],"phrase":["phrases"],"body":["bodies"],"part":["parts"],"parallel":[],"play":["plays","playing","played"],"jump":["jumps","jumping","jumped"],"remove":["removes","removing","removed","undress","undresses","undressing","undressed","take","takes","taking"],"clothe":["clothes","clothing","shirt","shirts","pants"],"turn":["turns","turning","turned","flip","flips","flipping","flipped"],"page":["pages"],"command":["commands","instruction","instructions","direction","directions"],"identify":["identifies","identifying","identified"],"color":["colors","colour","colours"],"alternate":["alternating","alternate"],"foot":["feet"],"tricycle":["trikes","trike","bike","bikes","bicycle"],"dress":["dresses","dressing","dressed"],"help":["helps","helping","helped","assist","assists","assisting","assisted"],"fork":["forks"],"copy":["copies","copying","copied"],"circle":["circles"],"sentence":["sentences"],"intelligible":["understandable","clear","clearly"],"speech":["speeches"],"age":["ages"],"sex":["gender","boy","boys","girl","girls","male","female"],"cooperative":[],"catch":["catches","catching","caught"],"pencil":["pencils"],"imaginative":["pretend","pretends","pretending","imagination","fantasy"],"hop":["hops","hopping","hopped"],"button":["buttons","buttoning","buttoned"],"write":["writes","writing","wrote","written"],"letter":["letters"],"count":["counts","counting","counted"],"full":["complete","completed"],"rule":["rules"],"without":[],"stair":["stairs","staircase"],"1":["one"],"2":["two","couple"],"3":["three"],"4":["four"],"5":["five"],"10":["ten"],"50":["fifty","half"],"75":["seventyfive"],"100":["hundred","onehundred"],"put":["puts","putting"]};
+      var KW_DATA = [{"g":[["lift"],["head"],["prone"]],"m":2},{"g":[["unfist"],["50"]],"m":2},{"g":[["alert","turn","orient","react"],["voice","noise"]],"m":2},{"g":[["make"],["noise"]],"m":2},{"g":[["smile"]],"m":1},{"g":[["recognize"],["parent"]],"m":2},{"g":[["eye"],["track"],["midline"]],"m":2},{"g":[["head"],["control"]],"m":2},{"g":[["forearm"]],"m":1},{"g":[["bring","hand"],["mouth","midline"]],"m":2},{"g":[["palm"]],"m":1},{"g":[["respond","turn","orient","react"],["voice"]],"m":2},{"g":[["coo"]],"m":1},{"g":[["look"],["around"]],"m":2},{"g":[["tripod"]],"m":1},{"g":[["roll"]],"m":1},{"g":[["reach"]],"m":1},{"g":[["put"],["mouth"]],"m":2},{"g":[["vocalize","squeal","raspberry"]],"m":1},{"g":[["laugh"]],"m":1},{"g":[["recognize"],["familiar","face"]],"m":2},{"g":[["sit"],["independent"]],"m":2},{"g":[["rake"]],"m":1},{"g":[["transfer"],["hand"]],"m":2},{"g":[["babble"]],"m":1},{"g":[["respond","turn","orient","react"],["name"]],"m":2},{"g":[["stranger"]],"m":1},{"g":[["separation"]],"m":1},{"g":[["pull"],["stand"]],"m":2},{"g":[["cruise"]],"m":1},{"g":[["pincer"]],"m":1},{"g":[["say"],["mama","dada"]],"m":2},{"g":[["wave"]],"m":1},{"g":[["understand"],["no"]],"m":2},{"g":[["patacake"]],"m":1},{"g":[["hidden"]],"m":1},{"g":[["step"],["independent","few"]],"m":2},{"g":[["stack"],["block"]],"m":2},{"g":[["say"],["word"],["1","2"]],"m":3},{"g":[["track"],["gesture"],["1","step"]],"m":3},{"g":[["point"]],"m":1},{"g":[["affection"]],"m":1},{"g":[["walk"],["easy"]],"m":2},{"g":[["climb"],["furniture"]],"m":2},{"g":[["scribble"]],"m":1},{"g":[["finger"]],"m":1},{"g":[["say"],["word"],["3"]],"m":3},{"g":[["track"],["without"],["1","step"]],"m":3},{"g":[["imitate"]],"m":1},{"g":[["run"]],"m":1},{"g":[["kick"],["ball"]],"m":2},{"g":[["walk","climb"],["stair"]],"m":2},{"g":[["spoon"]],"m":1},{"g":[["say"],["phrase"],["2"]],"m":2},{"g":[["recognize","name"],["2"],["body"]],"m":3},{"g":[["parallel"]],"m":1},{"g":[["jump"]],"m":1},{"g":[["remove"],["clothe"]],"m":2},{"g":[["turn"],["page"]],"m":2},{"g":[["say"],["word"],["50"]],"m":3},{"g":[["track"],["2"],["step"]],"m":3},{"g":[["identify","point","name"],["color"],["1"]],"m":3},{"g":[["walk","climb"],["stair"],["alternate"]],"m":3},{"g":[["tricycle"]],"m":1},{"g":[["dress"],["help"]],"m":2},{"g":[["fork"]],"m":1},{"g":[["circle"]],"m":1},{"g":[["say"],["sentence"],["3"]],"m":3},{"g":[["speech","intelligible"],["75"]],"m":2},{"g":[["recognize"],["age","sex"]],"m":2},{"g":[["cooperative"]],"m":1},{"g":[["catch"],["ball"]],"m":2},{"g":[["pencil"]],"m":1},{"g":[["say"],["sentence"],["4"]],"m":3},{"g":[["name"],["color"]],"m":2},{"g":[["imaginative"]],"m":1},{"g":[["hop"],["foot"]],"m":2},{"g":[["button"],["clothe"]],"m":2},{"g":[["write"],["letter"]],"m":2},{"g":[["speech","intelligible"],["100"]],"m":2},{"g":[["count"],["10"]],"m":2},{"g":[["speak","say"],["sentence"]],"m":2},{"g":[["understand"],["rule","turn"]],"m":2}];
+      var KW_STOP = {};
+      // Note: "a" is NOT a stopword here — the vaccine section needs it ("Hep A").
+      // No milestone keyword group uses the token "a", so keeping it is safe.
+      ["an", "and", "are", "as", "at", "be", "by", "for", "from", "in", "is", "it", "its", "of", "on", "or", "plus", "s", "the", "to"].forEach(function (w) { KW_STOP[w] = true; });
+      var KW_TOKEN_MAP = {};
+      Object.keys(KW_SYNONYMS).forEach(function (canon) {
+        KW_TOKEN_MAP[canon] = canon;
+        KW_SYNONYMS[canon].forEach(function (v) { KW_TOKEN_MAP[v] = canon; });
+      });
+      // Vaccine-section tokens: plurals and long forms map to the chart token.
+      KW_TOKEN_MAP["powers"] = "power";
+      KW_TOKEN_MAP["vaccines"] = "vaccine";
+      KW_TOKEN_MAP["doctor"] = "dr";
+      KW_TOKEN_MAP["orient"] = "orient";
+      KW_TOKEN_MAP["orients"] = "orient";
+      KW_TOKEN_MAP["orienting"] = "orient";
+      KW_TOKEN_MAP["oriented"] = "orient";
+      KW_TOKEN_MAP["react"] = "react";
+      KW_TOKEN_MAP["reacts"] = "react";
+      KW_TOKEN_MAP["reacting"] = "react";
+      KW_TOKEN_MAP["reacted"] = "react";
+      KW_TOKEN_MAP["reaction"] = "react";
+      MILESTONES.forEach(function (m, i) {
+        if (KW_DATA[i]) { m.kwGroups = KW_DATA[i].g; m.kwMin = KW_DATA[i].m; }
+      });
+      function kwTokens(s) {
+        var t = String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ");
+        var raw = t.split(" ").filter(function (w) { return w; });
+        var toks = [], i;
+        for (i = 0; i < raw.length; i++) {
+          if (raw[i] === "pat" && raw[i + 1] === "a" && raw[i + 2] === "cake") { toks.push("patacake"); i += 2; continue; }
+          if (raw[i] === "patty" && raw[i + 1] === "cake") { toks.push("patacake"); i += 1; continue; }
+          if ((raw[i] === "take" || raw[i] === "takes" || raw[i] === "taking" || raw[i] === "taken") && raw[i + 1] === "off") { toks.push("remove"); i += 1; continue; }
+          toks.push(raw[i]);
+        }
+        return toks
+          .map(function (w) {
+            if (KW_TOKEN_MAP[w]) return KW_TOKEN_MAP[w];
+            // Unlisted inflection: fall back to the bare stem, so a generic
+            // form like "babbling" or "making" still lands on its key word.
+            var stem = w.replace(/(ing|ed|es|s)$/, "");
+            if (stem.length >= 3 && stem !== w) {
+              if (KW_TOKEN_MAP[stem]) return KW_TOKEN_MAP[stem];
+              if (KW_TOKEN_MAP[stem + "e"]) return KW_TOKEN_MAP[stem + "e"];
+            }
+            return w;
+          })
+          .filter(function (w) { return !KW_STOP[w]; });
+      }
+      function kwMatch(input, milestone) {
+        if (!milestone || !milestone.kwGroups) return false;
+        var toks = kwTokens(input);
+        var set = {};
+        toks.forEach(function (w) { set[w] = true; });
+        // "without" is a content word: typing it must not satisfy an answer
+        // whose keyword groups don't include it (with- vs without-gesture).
+        if (set.without) {
+          var wantsWithout = milestone.kwGroups.some(function (g) { return g.indexOf("without") !== -1; });
+          if (!wantsWithout) return false;
+        }
+        var hits = 0;
+        milestone.kwGroups.forEach(function (g) {
+          var hit = false, i, j;
+          for (i = 0; i < g.length; i++) {
+            if (set[g[i]]) { hit = true; break; }
+          }
+          // A near-miss spelling of a key word still counts.
+          if (!hit) {
+            for (j = 0; j < toks.length && !hit; j++) {
+              if (toks[j].length < 5) continue;
+              for (i = 0; i < g.length; i++) {
+                if (g[i].length >= 5 && editDistance(toks[j], g[i]) <= 1) { hit = true; break; }
+              }
+            }
+          }
+          if (hit) hits++;
+        });
+        return hits >= milestone.kwMin;
+      }
+      function variantMatch(input, variants) {
+        var v = normalize(input);
+        if (!v) return false;
+        for (var i = 0; i < variants.length; i++) {
+          var target = variants[i];
+          if (v === target) return true;
+          var tol = target.length >= 12 ? 2 : target.length >= 6 ? 1 : 0;
+          if (tol > 0 && Math.abs(v.length - target.length) <= tol && editDistance(v, target) <= tol) return true;
+          // Accept when the typed words cover most of the answer's key words.
+          var tw = target.split(" "), vw = v.split(" ");
+          if (vw.length >= 2) {
+            var hit = 0;
+            vw.forEach(function (w) { if (tw.indexOf(w) !== -1) hit++; });
+            if (hit === vw.length && vw.length >= Math.ceil(tw.length * 0.7)) return true;
+          }
+        }
+        return false;
+      }
+      function isCorrect(input, variants, milestone) {
+        return variantMatch(input, variants) || kwMatch(input, milestone);
+      }
+      // ---------- Cell-level interchangeable blanks ----------
+      // Blanks that share one table cell (same age + same domain) accept any
+      // of that cell's milestones, in any order. Each cell keeps a pool of its
+      // not-yet-matched milestones; a correct entry consumes the milestone it
+      // matched, so the same milestone can't fill two blanks in the cell.
+      var cellPools = {};
+      function findPoolMatch(b, input) {
+        if (!input || !String(input).trim()) return null;
+        var pool = cellPools[b.cellKey];
+        if (!pool) {
+          return isCorrect(input, b.variants, b.milestone)
+            ? { milestone: b.milestone, variants: b.variants }
+            : null;
+        }
+        var i, entry;
+        // Exact/alias matches across the whole cell first, then keyword matches,
+        // so a precise answer is never stolen by a looser keyword overlap.
+        for (i = 0; i < pool.length; i++) {
+          entry = pool[i];
+          if (variantMatch(input, entry.variants)) return entry;
+        }
+        for (i = 0; i < pool.length; i++) {
+          entry = pool[i];
+          if (kwMatch(input, entry.milestone)) return entry;
+        }
+        return null;
+      }
+      function consumePoolMatch(b, entry) {
+        var pool = cellPools[b.cellKey];
+        if (!pool || !entry) return;
+        var idx = pool.indexOf(entry);
+        if (idx !== -1) pool.splice(idx, 1);
+      }
+      function hintFor(text) {
+        return text
+          .split(" ")
+          .map(function (w) {
+            if (w.length <= 1) return w;
+            return w.charAt(0) + w.slice(1).replace(/[A-Za-z0-9]/g, "·");
+          })
+          .join(" ");
+      }
+
+      // ---------- Build the tables ----------
+      // Every blank registers a progress group (one per milestone age section,
+      // one per vaccine row) so its header can show "done/total" for the
+      // currently visible set.
+      var blanks = []; // {wrap, input, note, milestone, variants, state, ...}
+      var cellTds = {}; // milestone cellKey -> td element
+      var ageRows = {}; // milestone age -> {section}
+      var progGroups = []; // {done, total, el}
+
+      function renderProg(p) { if (p.el) p.el.textContent = p.done + "/" + p.total; }
+      function newProg(el) {
+        var p = { done: 0, total: 0, el: el || null };
+        progGroups.push(p);
+        return p;
+      }
+      function makeBlank(m, cellKey, ariaLabel, prog, kind, sectionEl, placeholder) {
+        var wrap = document.createElement("div");
+        wrap.className = "blank";
+        var input = document.createElement("input");
+        input.type = "text";
+        input.autocomplete = "off";
+        input.autocapitalize = "off";
+        input.spellcheck = false;
+        input.placeholder = placeholder;
+        input.setAttribute("aria-label", ariaLabel);
+        var note = document.createElement("div");
+        note.className = "answer-note";
+        wrap.appendChild(input);
+        wrap.appendChild(note);
+        var b = {
+          wrap: wrap,
+          input: input,
+          note: note,
+          milestone: m,
+          variants: variantsFor(m),
+          cellKey: cellKey,
+          hy: !!m.hy,
+          kind: kind, // "milestone" | "vaccine"
+          prog: prog,
+          sectionEl: sectionEl || null,
+          placeholder0: placeholder,
+          active: true,
+          matched: null,
+          state: "open" // open | correct | revealed
+        };
+        blanks.push(b);
+        return wrap;
+      }
+
+      // Milestones: one collapsible section per age, each with its own table.
+      var ages = [];
+      MILESTONES.forEach(function (m) { if (ages.indexOf(m.age) === -1) ages.push(m.age); });
+      var sectionsEl = document.getElementById("milestoneSections");
+
+      ages.forEach(function (age) {
+        var inAge = MILESTONES.filter(function (m) { return m.age === age; });
+        var section = document.createElement("section");
+        section.className = "age-section";
+        var head = document.createElement("h2");
+        head.className = "age-head";
+        var toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "age-toggle";
+        toggle.setAttribute("aria-expanded", "true");
+        var chev = document.createElement("span");
+        chev.className = "chev";
+        chev.setAttribute("aria-hidden", "true");
+        chev.textContent = "▾";
+        var nameEl = document.createElement("span");
+        nameEl.textContent = age;
+        var progEl = document.createElement("span");
+        progEl.className = "age-progress";
+        progEl.textContent = "0/" + inAge.length;
+        toggle.appendChild(chev);
+        toggle.appendChild(nameEl);
+        toggle.appendChild(progEl);
+        head.appendChild(toggle);
+        section.appendChild(head);
+        var prog = newProg(progEl);
+        toggle.addEventListener("click", function () {
+          var collapsed = section.classList.toggle("collapsed");
+          toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        });
+
+        var body = document.createElement("div");
+        body.className = "age-body";
+        var table = document.createElement("table");
+        table.setAttribute("aria-label", age + " milestones with blanked-out milestones");
+        var colgroup = document.createElement("colgroup");
+        for (var c = 0; c < DOMAINS.length; c++) colgroup.appendChild(document.createElement("col"));
+        table.appendChild(colgroup);
+        var thead = document.createElement("thead");
+        var htr = document.createElement("tr");
+        DOMAINS.forEach(function (domain) {
+          var th = document.createElement("th");
+          th.className = DOMAIN_CLASS[domain];
+          th.scope = "col";
+          th.textContent = domain === "Social/Cognitive" ? "Social / Cognitive" : domain;
+          htr.appendChild(th);
+        });
+        thead.appendChild(htr);
+        table.appendChild(thead);
+        var tb = document.createElement("tbody");
+        var tr = document.createElement("tr");
+        DOMAINS.forEach(function (domain) {
+          var td = document.createElement("td");
+          td.className = DOMAIN_CLASS[domain];
+          cellTds[age + "|" + domain] = td;
+          var label = document.createElement("span");
+          label.className = "domain-label";
+          label.textContent = domain === "Social/Cognitive" ? "Social / Cognitive" : domain;
+          td.appendChild(label);
+          inAge
+            .filter(function (m) { return m.domain === domain; })
+            .forEach(function (m, idx) {
+              td.appendChild(makeBlank(
+                m,
+                age + "|" + domain,
+                age + ", " + domain + ", blank " + (idx + 1),
+                prog, "milestone", section, "type the milestone…"
+              ));
+            });
+          tr.appendChild(td);
+        });
+        tb.appendChild(tr);
+        table.appendChild(tb);
+        body.appendChild(table);
+        section.appendChild(body);
+        sectionsEl.appendChild(section);
+        ageRows[age] = { section: section };
+      });
+
+      // ---------- Vaccines section ----------
+      // Pediatric vaccine schedule from Victor's chart: items blanked per age
+      // row (interchangeable within the row, per the cell-pool rule) plus one
+      // blank per row mnemonic. Always the full schedule — the High-yield
+      // toggle scopes milestones only.
+      var VACCINES = [
+        { age: "Birth", mnemonic: null, mnemonic_groups: null, mn_min: 0, items: [
+          { display: "Hep B — 1st dose", aliases: ["hepatitis b"], groups: [["hep", "hepatitis"], ["b"]], min: 2 }
+        ]},
+        { age: "2 months", mnemonic: "B Dr. HIP", mnemonic_groups: [["b"], ["dr"], ["hip"]], mn_min: 3, items: [
+          { display: "Hep B — 2nd dose", aliases: ["hepatitis b"], groups: [["hep", "hepatitis"], ["b"]], min: 2 },
+          { display: "DTaP", aliases: ["dtp"], groups: [["dtap", "dtp"]], min: 1 },
+          { display: "Rotavirus", aliases: ["rota"], groups: [["rotavirus", "rota"]], min: 1 },
+          { display: "Hib", aliases: [], groups: [["hib"]], min: 1 },
+          { display: "IPV (Polio)", aliases: ["polio"], groups: [["ipv", "polio"]], min: 1 },
+          { display: "PCV (Pneumococcal conjugate)", aliases: ["pneumococcal"], groups: [["pcv", "pneumococcal"]], min: 1 }
+        ]},
+        { age: "4 months", mnemonic: "Dr. HIP", mnemonic_groups: [["dr"], ["hip"]], mn_min: 2, items: [
+          { display: "DTaP", aliases: ["dtp"], groups: [["dtap", "dtp"]], min: 1 },
+          { display: "Rotavirus", aliases: ["rota"], groups: [["rotavirus", "rota"]], min: 1 },
+          { display: "Hib", aliases: [], groups: [["hib"]], min: 1 },
+          { display: "IPV (Polio)", aliases: ["polio"], groups: [["ipv", "polio"]], min: 1 },
+          { display: "PCV (Pneumococcal conjugate)", aliases: ["pneumococcal"], groups: [["pcv", "pneumococcal"]], min: 1 }
+        ]},
+        { age: "6 months", mnemonic: "B Dr. HIP + Flu", mnemonic_groups: [["b"], ["dr"], ["hip"], ["flu"]], mn_min: 4, items: [
+          { display: "Hep B — 3rd dose", aliases: ["hepatitis b"], groups: [["hep", "hepatitis"], ["b"]], min: 2 },
+          { display: "DTaP", aliases: ["dtp"], groups: [["dtap", "dtp"]], min: 1 },
+          { display: "Rotavirus — 3rd dose if 3-dose series", aliases: ["rota"], groups: [["rotavirus", "rota"]], min: 1 },
+          { display: "Hib", aliases: [], groups: [["hib"]], min: 1 },
+          { display: "IPV (Polio)", aliases: ["polio"], groups: [["ipv", "polio"]], min: 1 },
+          { display: "PCV (Pneumococcal conjugate)", aliases: ["pneumococcal"], groups: [["pcv", "pneumococcal"]], min: 1 },
+          { display: "Influenza — annual from ≥6 mo", aliases: ["flu"], groups: [["influenza", "flu"]], min: 1 }
+        ]},
+        { age: "12–15 months", mnemonic: "My Vaccines Have Hidden Powers", mnemonic_groups: [["my"], ["vaccine"], ["have"], ["hidden"], ["power"]], mn_min: 4, items: [
+          { display: "MMR — 1st dose", aliases: [], groups: [["mmr"]], min: 1 },
+          { display: "Varicella — 1st dose", aliases: ["chickenpox", "chicken pox"], groups: [["varicella", "chickenpox"]], min: 1 },
+          { display: "Hep A — begin 2-dose series", aliases: ["hepatitis a"], groups: [["hep", "hepatitis"], ["a"]], min: 2 },
+          { display: "Hib — booster", aliases: [], groups: [["hib"]], min: 1 },
+          { display: "PCV — booster", aliases: ["pneumococcal"], groups: [["pcv", "pneumococcal"]], min: 1 }
+        ]},
+        { age: "15–18 months", mnemonic: null, mnemonic_groups: null, mn_min: 0, items: [
+          { display: "DTaP #4", aliases: ["dtp"], groups: [["dtap", "dtp"]], min: 1 }
+        ]},
+        { age: "4–6 years", mnemonic: "Very DIM", mnemonic_groups: [["very"], ["dim"]], mn_min: 2, items: [
+          { display: "Varicella #2", aliases: ["chickenpox", "chicken pox"], groups: [["varicella", "chickenpox"]], min: 1 },
+          { display: "DTaP #5 (final)", aliases: ["dtp"], groups: [["dtap", "dtp"]], min: 1 },
+          { display: "IPV #4 (final)", aliases: ["polio"], groups: [["ipv", "polio"]], min: 1 },
+          { display: "MMR #2", aliases: [], groups: [["mmr"]], min: 1 }
+        ]}
+      ];
+
+      var vaxTbody = document.getElementById("vaxTbody");
+      VACCINES.forEach(function (row) {
+        var tr = document.createElement("tr");
+        var th = document.createElement("th");
+        th.className = "age-cell";
+        th.scope = "row";
+        th.appendChild(document.createTextNode(row.age));
+        var cnt = document.createElement("span");
+        cnt.className = "count";
+        th.appendChild(cnt);
+        tr.appendChild(th);
+        var prog = newProg(cnt);
+
+        var tdV = document.createElement("td");
+        var labV = document.createElement("span");
+        labV.className = "domain-label vax-label";
+        labV.textContent = "Vaccines due";
+        tdV.appendChild(labV);
+        row.items.forEach(function (item, idx) {
+          var m = { text: item.display, aliases: item.aliases || [], kwGroups: item.groups, kwMin: item.min };
+          tdV.appendChild(makeBlank(
+            m,
+            "vax|" + row.age + "|items",
+            row.age + " vaccines, blank " + (idx + 1),
+            prog, "vaccine", null, "type the vaccine…"
+          ));
+        });
+        tr.appendChild(tdV);
+
+        var tdM = document.createElement("td");
+        var labM = document.createElement("span");
+        labM.className = "domain-label vax-label";
+        labM.textContent = "Mnemonic";
+        tdM.appendChild(labM);
+        if (row.mnemonic) {
+          var mm = { text: row.mnemonic, aliases: [], kwGroups: row.mnemonic_groups, kwMin: row.mn_min };
+          tdM.appendChild(makeBlank(
+            mm,
+            "vax|" + row.age + "|mnemonic",
+            row.age + " mnemonic",
+            prog, "vaccine", null, "type the mnemonic…"
+          ));
+        } else {
+          var none = document.createElement("span");
+          none.className = "none-mark";
+          none.textContent = "—";
+          tdM.appendChild(none);
+        }
+        tr.appendChild(tdM);
+        vaxTbody.appendChild(tr);
+      });
+
+      function initPools() {
+        cellPools = {};
+        blanks.forEach(function (b) {
+          if (!b.active) return;
+          if (!cellPools[b.cellKey]) cellPools[b.cellKey] = [];
+          cellPools[b.cellKey].push({ milestone: b.milestone, variants: b.variants });
+        });
+      }
+      initPools();
+
+      // ---------- Game state ----------
+      var correctCount = 0;
+      var mistakeCount = 0;
+      var startedAt = null;
+      var timerId = null;
+      var finished = false;
+      var hintsOn = false;
+      var highYieldMode = false;
+
+      var scoreNum = document.getElementById("scoreNum");
+      var barFill = document.getElementById("barFill");
+      var timerEl = document.getElementById("timer");
+      var mistakesEl = document.getElementById("mistakes");
+      var banner = document.getElementById("banner");
+      var bannerTitle = document.getElementById("bannerTitle");
+      var bannerText = document.getElementById("bannerText");
+      var modeAllBtn = document.getElementById("modeAll");
+      var modeHYBtn = document.getElementById("modeHY");
+      var scoreSmall = document.querySelector(".score small");
+
+      function updateScoreLabel() {
+        scoreSmall.textContent = "/ " + TOTAL + " correct";
+      }
+      updateScoreLabel();
+
+      function fmtTime(sec) {
+        var m = Math.floor(sec / 60), s = sec % 60;
+        return m + ":" + (s < 10 ? "0" : "") + s;
+      }
+      function startTimer() {
+        if (startedAt !== null) return;
+        startedAt = Date.now();
+        timerId = setInterval(function () {
+          timerEl.textContent = fmtTime(Math.floor((Date.now() - startedAt) / 1000));
+        }, 500);
+      }
+      function stopTimer() {
+        if (timerId) clearInterval(timerId);
+        timerId = null;
+      }
+      function elapsedText() {
+        if (startedAt === null) return "0:00";
+        return fmtTime(Math.floor((Date.now() - startedAt) / 1000));
+      }
+      function refreshHud() {
+        scoreNum.textContent = correctCount;
+        mistakesEl.textContent = mistakeCount;
+        barFill.style.width = (TOTAL ? (correctCount / TOTAL) * 100 : 0) + "%";
+      }
+      function nextOpen(fromIdx) {
+        for (var i = fromIdx + 1; i < blanks.length; i++) {
+          if (blanks[i].active && blanks[i].state === "open") return blanks[i];
+        }
+        for (var j = 0; j <= fromIdx; j++) {
+          if (blanks[j].active && blanks[j].state === "open") return blanks[j];
+        }
+        return null;
+      }
+      function ensureVisible(b) {
+        if (b.sectionEl && b.sectionEl.classList.contains("collapsed")) {
+          b.sectionEl.classList.remove("collapsed");
+          var btn = b.sectionEl.querySelector(".age-toggle");
+          if (btn) btn.setAttribute("aria-expanded", "true");
+        }
+      }
+      function markCorrect(b, idx, entry) {
+        var matched = entry && entry.milestone ? entry.milestone : b.milestone;
+        if (entry) consumePoolMatch(b, entry);
+        b.matched = matched;
+        b.state = "correct";
+        b.wrap.classList.remove("wrong");
+        b.wrap.classList.add("correct");
+        b.input.value = matched.text;
+        b.input.disabled = true;
+        correctCount++;
+        if (b.prog) { b.prog.done++; renderProg(b.prog); }
+        refreshHud();
+        if (correctCount === TOTAL) {
+          finished = true;
+          stopTimer();
+          banner.classList.remove("revealed");
+          banner.classList.add("show");
+          bannerTitle.textContent = highYieldMode
+            ? "High-yield set complete — all " + TOTAL + " blanks"
+            : "Full table complete — all " + TOTAL + " blanks";
+          bannerText.innerHTML =
+            "Finished in <b>" + elapsedText() + "</b> with <b>" + mistakeCount +
+            "</b> mistake" + (mistakeCount === 1 ? "" : "s") +
+            ". Hit Restart to run it again from a blank table.";
+        } else {
+          var nxt = nextOpen(idx);
+          if (nxt) { ensureVisible(nxt); nxt.input.focus(); }
+        }
+      }
+      function markWrong(b) {
+        // Flag only — checking never prints the answer; that's Reveal's job.
+        b.wrap.classList.add("wrong");
+        b.input.classList.remove("shake");
+        void b.input.offsetWidth;
+        b.input.classList.add("shake");
+      }
+
+      blanks.forEach(function (b, idx) {
+        b.input.addEventListener("input", function () {
+          if (finished) return;
+          startTimer();
+          b.wrap.classList.remove("wrong");
+          var match = b.input.value.trim() ? findPoolMatch(b, b.input.value) : null;
+          if (match) {
+            markCorrect(b, idx, match);
+          }
+        });
+        b.input.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            if (b.state === "open" && b.input.value.trim() && !findPoolMatch(b, b.input.value)) {
+              mistakeCount++;
+              refreshHud();
+              markWrong(b);
+            }
+            var nxt = nextOpen(idx);
+            if (nxt && nxt !== b) { ensureVisible(nxt); nxt.input.focus(); }
+          }
+        });
+      });
+
+      document.getElementById("checkBtn").addEventListener("click", function () {
+        if (finished) return;
+        var newMistakes = 0;
+        blanks.forEach(function (b) {
+          if (!b.active || b.state !== "open") return;
+          var val = b.input.value.trim();
+          if (!val) { b.wrap.classList.remove("wrong"); return; }
+          if (!findPoolMatch(b, val)) {
+            newMistakes++;
+            markWrong(b);
+          }
+        });
+        if (newMistakes) {
+          mistakeCount += newMistakes;
+          refreshHud();
+        }
+      });
+
+      document.getElementById("revealBtn").addEventListener("click", function () {
+        if (finished) return;
+        finished = true;
+        stopTimer();
+        var gotOwn = correctCount;
+        blanks.forEach(function (b) {
+          if (b.active && b.state === "open") {
+            var pool = cellPools[b.cellKey] || [];
+            var entry = pool.length ? pool.shift() : null;
+            b.state = "revealed";
+            b.wrap.classList.remove("wrong");
+            b.wrap.classList.add("revealed");
+            var answer = entry ? entry.milestone.text : b.milestone.text;
+            if (b.input.value.trim()) {
+              // Keep whatever was typed in the blank — right or wrong, it
+              // stays put and the answer appears underneath it.
+              b.note.textContent = "Answer: " + answer;
+            } else {
+              b.input.value = answer;
+            }
+            b.input.disabled = true;
+          }
+        });
+        banner.classList.add("show", "revealed");
+        bannerTitle.textContent = "Answers revealed";
+        bannerText.innerHTML =
+          "You filled in <b>" + gotOwn + " of " + TOTAL + "</b> on your own" +
+          (startedAt !== null ? " in <b>" + elapsedText() + "</b>" : "") +
+          " with <b>" + mistakeCount + "</b> mistake" + (mistakeCount === 1 ? "" : "s") +
+          ". The ones you missed are highlighted — anything you had typed stays in its blank, with the answer underneath it. Restart when you're ready to try the blank table again.";
+      });
+
+      document.getElementById("resetBtn").addEventListener("click", function () {
+        setMode(highYieldMode ? "hy" : "all", true);
+      });
+
+      // ---------- Mode: All (83) vs High yield (45) ----------
+      // Switching modes starts a fresh round scoped to the visible set:
+      // non-high-yield milestone blanks hide (whole age sections with none
+      // left hide too), per-age progress and the score total follow, and the
+      // cell pools rebuild from the active blanks only. Vaccine blanks are
+      // always active — the toggle scopes milestones only.
+      function setMode(mode, focusFirst) {
+        highYieldMode = mode === "hy";
+        finished = false;
+        correctCount = 0;
+        mistakeCount = 0;
+        startedAt = null;
+        stopTimer();
+        timerEl.textContent = "0:00";
+        banner.classList.remove("show", "revealed");
+        modeAllBtn.setAttribute("aria-pressed", highYieldMode ? "false" : "true");
+        modeHYBtn.setAttribute("aria-pressed", highYieldMode ? "true" : "false");
+        var ageCounts = {};
+        var cellActive = {};
+        TOTAL = 0;
+        progGroups.forEach(function (p) { p.done = 0; p.total = 0; });
+        blanks.forEach(function (b) {
+          b.active = b.kind === "vaccine" || !highYieldMode || b.hy;
+          b.state = "open";
+          b.matched = null;
+          b.wrap.classList.remove("correct", "revealed", "wrong");
+          b.wrap.classList.toggle("hidden-blank", !b.active);
+          b.input.disabled = false;
+          b.input.value = "";
+          b.note.textContent = "";
+          b.input.placeholder = hintsOn ? hintFor(b.milestone.text) : b.placeholder0;
+          if (b.active) {
+            TOTAL++;
+            if (b.prog) b.prog.total++;
+            if (b.kind === "milestone") {
+              ageCounts[b.milestone.age] = (ageCounts[b.milestone.age] || 0) + 1;
+            }
+            cellActive[b.cellKey] = true;
+          }
+        });
+        progGroups.forEach(renderProg);
+        Object.keys(cellTds).forEach(function (key) {
+          cellTds[key].classList.toggle("cell-empty", !cellActive[key]);
+        });
+        Object.keys(ageRows).forEach(function (age) {
+          ageRows[age].section.classList.toggle("section-hidden", !ageCounts[age]);
+        });
+        updateScoreLabel();
+        initPools();
+        refreshHud();
+        if (focusFirst) {
+          var first = nextOpen(-1);
+          if (first) { ensureVisible(first); first.input.focus(); }
+        }
+      }
+      modeAllBtn.addEventListener("click", function () { setMode("all", true); });
+      modeHYBtn.addEventListener("click", function () { setMode("hy", true); });
+
+      document.getElementById("hintBtn").addEventListener("click", function () {
+        hintsOn = !hintsOn;
+        this.setAttribute("aria-pressed", hintsOn ? "true" : "false");
+        blanks.forEach(function (b) {
+          if (b.active && b.state === "open") {
+            b.input.placeholder = hintsOn ? hintFor(b.milestone.text) : b.placeholder0;
+          }
+        });
+      });
+
+      setMode("all", false);
+    </script>
+  </body>
+</html>
