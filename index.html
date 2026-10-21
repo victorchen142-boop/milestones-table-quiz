@@ -483,8 +483,10 @@
           <div class="recall-row"><span class="recall-age">4 mo</span><span>Dr. HIP</span></div>
           <div class="recall-row"><span class="recall-age">6 mo</span><span>B Dr. HIP + Flu</span></div>
           <div class="recall-row"><span class="recall-age">12–15 mo</span><span>MMR + Varicella + Hep A + Hib/PCV boosters</span></div>
-          <div class="recall-row"><span class="recall-age">15–18 mo</span><span>DTaP #4</span></div>
+          <div class="recall-row"><span class="recall-age">15–18 mo</span><span>DTaP #4 + Hep A #2</span></div>
           <div class="recall-row"><span class="recall-age">4–6 yr</span><span>Very DIM</span></div>
+          <div class="recall-row"><span class="recall-age">11–12 yr</span><span>Tdap + MenACWY</span></div>
+          <div class="recall-row"><span class="recall-age">16 yr</span><span>MenACWY booster</span></div>
         </div>
       </section>
 
@@ -496,8 +498,10 @@
         and “turns to voice” counts for “responds to voice”.
         Within a single cell, order doesn't matter: any of that cell's milestones is accepted in
         any of its blanks, and each one counts only once per cell. Vaccine schedule from the
-        vaccine chart in the same doc; within a vaccine row the shots can go in any order, and
-        simple forms count — “flu” for influenza, “chicken pox” for varicella.
+        vaccine chart in the same doc, plus the high-yield additions: Hep A #2 at 15–18 months
+        (6 months after the first dose) and the adolescent platform — Tdap + MenACWY at
+        11–12 years, MenACWY booster at 16 years. Within a vaccine row the shots can go in
+        any order, and simple forms count — “flu” for influenza, “chicken pox” for varicella.
         Check all only flags what's wrong — it never shows an answer. Once a blank is
         flagged wrong, a Reveal answer button appears under just that blank: it shows
         that one answer (anything you typed stays in the blank, with the answer
@@ -728,6 +732,7 @@
       // one per vaccine row) so its header can show "done/total" for the
       // currently visible set.
       var blanks = []; // {wrap, input, note, milestone, variants, state, ...}
+      var blankIdCounts = {};
       var cellTds = {}; // milestone cellKey -> td element
       var ageRows = {}; // milestone age -> {section}
       var progGroups = []; // {done, total, el}
@@ -775,6 +780,9 @@
           everWrong: false,
           state: "open" // open | correct | revealed
         };
+        var idKey = kind + "|" + cellKey + "|" + m.text;
+        blankIdCounts[idKey] = (blankIdCounts[idKey] || 0) + 1;
+        b.id = idKey + "|" + blankIdCounts[idKey];
         blanks.push(b);
         return wrap;
       }
@@ -912,13 +920,21 @@
           { display: "PCV — booster", aliases: ["pneumococcal"], groups: [["pcv", "pneumococcal"]], min: 1 }
         ]},
         { age: "15–18 months", mnemonic: null, mnemonic_groups: null, mn_min: 0, items: [
-          { display: "DTaP #4", aliases: ["dtp"], groups: [["dtap", "dtp"]], min: 1 }
+          { display: "DTaP #4", aliases: ["dtp"], groups: [["dtap", "dtp"]], min: 1 },
+          { display: "Hep A — 2nd dose", aliases: ["hepatitis a"], groups: [["hep", "hepatitis"], ["a"]], min: 2 }
         ]},
         { age: "4–6 years", mnemonic: "Very DIM", mnemonic_groups: [["very"], ["dim"]], mn_min: 2, items: [
           { display: "Varicella #2", aliases: ["chickenpox", "chicken pox"], groups: [["varicella", "chickenpox"]], min: 1 },
           { display: "DTaP #5 (final)", aliases: ["dtp"], groups: [["dtap", "dtp"]], min: 1 },
           { display: "IPV #4 (final)", aliases: ["polio"], groups: [["ipv", "polio"]], min: 1 },
           { display: "MMR #2", aliases: ["measles mumps rubella"], groups: [["mmr"]], min: 1 }
+        ]},
+        { age: "11–12 years", mnemonic: null, mnemonic_groups: null, mn_min: 0, items: [
+          { display: "Tdap", aliases: ["tetanus diphtheria pertussis"], groups: [["tdap"]], min: 1 },
+          { display: "MenACWY (Meningococcal)", aliases: ["meningococcal", "mcv4"], groups: [["menacwy", "meningococcal", "mcv4"]], min: 1 }
+        ]},
+        { age: "16 years", mnemonic: null, mnemonic_groups: null, mn_min: 0, items: [
+          { display: "MenACWY — booster", aliases: ["meningococcal", "menacwy", "mcv4"], groups: [["menacwy", "meningococcal", "mcv4"]], min: 1 }
         ]}
       ];
 
@@ -1479,6 +1495,7 @@
             elapsed: currentElapsed(),
             blanks: blanks.map(function (b) {
               return {
+                id: b.id,
                 v: b.input.value,
                 s: b.state,
                 m: b.matched ? b.matched.text : null,
@@ -1495,16 +1512,37 @@
           var raw = localStorage.getItem(SAVE_KEY);
           if (raw) data = JSON.parse(raw);
         } catch (e) {}
-        if (!data || data.v !== 1 || !data.blanks || data.blanks.length !== blanks.length) {
+        if (!data || data.v !== 1 || !data.blanks) {
           saveReady = true;
           return;
+        }
+        // Match saved entries to blanks by stable id, so content updates
+        // (added vaccines, new rows) never lose an in-progress run. Saves
+        // from before ids existed: positions up to the 15-18-month row
+        // cannot have shifted, and the vaccine tail after it is matched
+        // by the blank's chart text.
+        var byId = {};
+        if (data.blanks.length && data.blanks[0].id) {
+          data.blanks.forEach(function (e) { if (e && e.id) byId[e.id] = e; });
+        } else if (data.blanks.length === 117) {
+          var OLD_TAIL = ["DTaP #4", "Varicella #2", "DTaP #5 (final)", "IPV #4 (final)", "MMR #2", "Very DIM"];
+          data.blanks.forEach(function (e, i) {
+            if (i < 111 && blanks[i]) byId[blanks[i].id] = e;
+          });
+          OLD_TAIL.forEach(function (text, k) {
+            var e = data.blanks[111 + k];
+            if (!e) return;
+            for (var j = 0; j < blanks.length; j++) {
+              if (blanks[j].kind === "vaccine" && blanks[j].milestone.text === text) { byId[blanks[j].id] = e; break; }
+            }
+          });
         }
         setMode(data.mode === "hy" ? "hy" : "all", false);
         if (data.hints && !hintsOn) document.getElementById("hintBtn").click();
         mistakeCount = data.mistakes || 0;
         lastElapsed = data.elapsed || 0;
-        blanks.forEach(function (b, i) {
-          var s = data.blanks[i];
+        blanks.forEach(function (b) {
+          var s = byId[b.id];
           if (!s || !b.active) return;
           b.everWrong = !!s.w;
           if (s.s === "correct" || s.s === "revealed") {
