@@ -3,17 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="dark" />
     <link rel="icon" href="data:," />
     <meta name="description" content="Fill-in-the-blank developmental milestones and pediatric vaccine schedule quiz — the chart, blanked out." />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f4ee" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#14181d" />
-    <script>
-      try {
-        var savedTheme = localStorage.getItem("mtq-theme");
-        if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
-      } catch (e) {}
-    </script>
+    <meta name="theme-color" content="#14181d" />
     <title>Milestones Table Quiz</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -23,114 +16,31 @@
     />
     <style>
       :root {
-        --bg: #f7f4ee;
-        --surface: #fffdf9;
-        --surface-2: #f1ece2;
-        --ink: #1d2733;
-        --ink-soft: #55606c;
-        --line: #ddd5c6;
-        --line-strong: #c9bfa9;
-        --accent: #0f766e;
-        --accent-ink: #ffffff;
-        --good: #1e7d32;
-        --good-bg: #e3f2e4;
-        --bad: #b3261e;
-        --bad-bg: #fbe7e4;
-        --revealed-bg: #fdf3d7;
-        --revealed-ink: #7a5b00;
-        --focus: #0f766e;
-        --shadow: 0 1px 2px rgba(29, 39, 51, 0.06), 0 8px 24px rgba(29, 39, 51, 0.06);
-        --d-gross: #e8f1f8;
-        --d-fine: #fdf0dc;
-        --d-lang: #fbe9e7;
-        --d-social: #e6f3e6;
-        --d-gross-ink: #1d5b86;
-        --d-fine-ink: #8a5a00;
-        --d-lang-ink: #9c3a2e;
-        --d-social-ink: #2e6b2e;
-      }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #14181d;
-          --surface: #1c2129;
-          --surface-2: #232a34;
-          --ink: #e8ecf1;
-          --ink-soft: #9aa6b2;
-          --line: #333c47;
-          --line-strong: #46525f;
-          --accent: #2dd4bf;
-          --accent-ink: #0b1512;
-          --good: #7bd88a;
-          --good-bg: #1e3524;
-          --bad: #ff9d94;
-          --bad-bg: #40231f;
-          --revealed-bg: #3a3115;
-          --revealed-ink: #f0d488;
-          --focus: #2dd4bf;
-          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
-          --d-gross: #1d2c3a;
-          --d-fine: #3a2f18;
-          --d-lang: #3a2320;
-          --d-social: #1f3320;
-          --d-gross-ink: #9cc8e8;
-          --d-fine-ink: #eec27a;
-          --d-lang-ink: #f0a79c;
-          --d-social-ink: #a3d8a3;
-        }
-      }
-      :root[data-theme="dark"] {
-          --bg: #14181d;
-          --surface: #1c2129;
-          --surface-2: #232a34;
-          --ink: #e8ecf1;
-          --ink-soft: #9aa6b2;
-          --line: #333c47;
-          --line-strong: #46525f;
-          --accent: #2dd4bf;
-          --accent-ink: #0b1512;
-          --good: #7bd88a;
-          --good-bg: #1e3524;
-          --bad: #ff9d94;
-          --bad-bg: #40231f;
-          --revealed-bg: #3a3115;
-          --revealed-ink: #f0d488;
-          --focus: #2dd4bf;
-          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
-          --d-gross: #1d2c3a;
-          --d-fine: #3a2f18;
-          --d-lang: #3a2320;
-          --d-social: #1f3320;
-          --d-gross-ink: #9cc8e8;
-          --d-fine-ink: #eec27a;
-          --d-lang-ink: #f0a79c;
-          --d-social-ink: #a3d8a3;
-      }
-      :root[data-theme="light"] {
-        --bg: #f7f4ee;
-        --surface: #fffdf9;
-        --surface-2: #f1ece2;
-        --ink: #1d2733;
-        --ink-soft: #55606c;
-        --line: #ddd5c6;
-        --line-strong: #c9bfa9;
-        --accent: #0f766e;
-        --accent-ink: #ffffff;
-        --good: #1e7d32;
-        --good-bg: #e3f2e4;
-        --bad: #b3261e;
-        --bad-bg: #fbe7e4;
-        --revealed-bg: #fdf3d7;
-        --revealed-ink: #7a5b00;
-        --focus: #0f766e;
-        --shadow: 0 1px 2px rgba(29, 39, 51, 0.06), 0 8px 24px rgba(29, 39, 51, 0.06);
-        --d-gross: #e8f1f8;
-        --d-fine: #fdf0dc;
-        --d-lang: #fbe9e7;
-        --d-social: #e6f3e6;
-        --d-gross-ink: #1d5b86;
-        --d-fine-ink: #8a5a00;
-        --d-lang-ink: #9c3a2e;
-        --d-social-ink: #2e6b2e;
+        --bg: #14181d;
+        --surface: #1c2129;
+        --surface-2: #232a34;
+        --ink: #e8ecf1;
+        --ink-soft: #9aa6b2;
+        --line: #333c47;
+        --line-strong: #46525f;
+        --accent: #2dd4bf;
+        --accent-ink: #0b1512;
+        --good: #7bd88a;
+        --good-bg: #1e3524;
+        --bad: #ff9d94;
+        --bad-bg: #40231f;
+        --revealed-bg: #3a3115;
+        --revealed-ink: #f0d488;
+        --focus: #2dd4bf;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+        --d-gross: #1d2c3a;
+        --d-fine: #3a2f18;
+        --d-lang: #3a2320;
+        --d-social: #1f3320;
+        --d-gross-ink: #9cc8e8;
+        --d-fine-ink: #eec27a;
+        --d-lang-ink: #f0a79c;
+        --d-social-ink: #a3d8a3;
       }
       * { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; }
@@ -142,17 +52,17 @@
         font-size: 16px;
         line-height: 1.45;
       }
-      .wrap { max-width: 1180px; margin: 0 auto; padding: 20px 16px 64px; }
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 12px 16px 64px; }
 
-      header.intro { padding: 10px 2px 14px; }
+      header.intro { padding: 4px 2px 8px; }
       header.intro h1 {
         font-family: "IBM Plex Serif", Georgia, serif;
-        font-size: clamp(26px, 4.5vw, 38px);
+        font-size: clamp(22px, 4vw, 30px);
         line-height: 1.12;
-        margin: 0 0 8px;
+        margin: 0 0 6px;
         letter-spacing: -0.01em;
       }
-      header.intro p { margin: 0; color: var(--ink-soft); max-width: 62ch; }
+      header.intro p { margin: 0; color: var(--ink-soft); max-width: 68ch; font-size: 14.5px; }
       header.intro p strong { color: var(--ink); }
 
       .hud {
@@ -163,22 +73,22 @@
         border: 1px solid var(--line);
         border-radius: 12px;
         box-shadow: var(--shadow);
-        padding: 12px 14px;
-        margin: 14px 0 18px;
+        padding: 8px 10px;
+        margin: 10px 0 12px;
       }
       .hud-top {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 10px 18px;
+        gap: 8px 12px;
       }
       .score {
-        font-size: 22px;
+        font-size: 19px;
         font-weight: 700;
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
       }
-      .score small { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+      .score small { font-size: 13px; font-weight: 500; color: var(--ink-soft); }
       .stat {
         font-size: 14px;
         color: var(--ink-soft);
@@ -195,17 +105,17 @@
         background: var(--surface-2);
         color: var(--ink);
         border-radius: 8px;
-        padding: 8px 14px;
+        padding: 6px 11px;
         cursor: pointer;
-        min-height: 40px;
+        min-height: 36px;
       }
       button:hover { border-color: var(--ink-soft); }
       button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
       button.primary:hover { filter: brightness(1.08); }
       button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
       .bar {
-        margin-top: 10px;
-        height: 8px;
+        margin-top: 8px;
+        height: 6px;
         border-radius: 99px;
         background: var(--surface-2);
         border: 1px solid var(--line);
@@ -416,12 +326,12 @@
       .mode-switch button + button { border-left: 1px solid var(--line-strong); }
       .blank.hidden-blank { display: none; }
 
-      .chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 10px; margin: -8px 0 12px; scrollbar-width: thin; }
-      .chip { flex: 0 0 auto; font-size: 13px; font-weight: 600; padding: 7px 12px; min-height: 36px; border-radius: 99px; }
+      .chips { display: flex; gap: 8px; overflow-x: auto; padding: 0 2px 8px; margin: -4px 0 10px; scrollbar-width: thin; }
+      .chip { flex: 0 0 auto; font-size: 13px; font-weight: 600; padding: 5px 11px; min-height: 32px; border-radius: 99px; }
       .chip .n { color: var(--ink-soft); font-weight: 500; margin-left: 5px; font-variant-numeric: tabular-nums; }
       .chip.done { border-color: var(--good); color: var(--good); background: var(--good-bg); }
       .chip.done .n { color: var(--good); }
-      .age-section, .vax-section { scroll-margin-top: 112px; }
+      .age-section, .vax-section { scroll-margin-top: 84px; }
       .age-progress.complete { color: var(--good); }
       .age-head { display: flex; align-items: stretch; }
       .age-head .age-toggle { flex: 1 1 auto; width: auto; }
@@ -475,20 +385,20 @@
         td.d-social .domain-label { color: var(--d-social-ink); }
         .hud-actions { margin-left: 0; }
         .hud-actions button { flex: 1 1 auto; }
-        .wrap { padding: 10px 6px 48px; }
-        header.intro h1 { font-size: 24px; }
+        .wrap { padding: 8px 6px 48px; }
+        header.intro h1 { font-size: 21px; }
         header.intro p { font-size: 14px; }
-        .hud { padding: 8px 10px; margin: 10px 0 14px; }
-        .score { font-size: 19px; }
-        .stat { font-size: 13px; }
-        .hud-actions button { min-height: 38px; padding: 6px 10px; }
+        .hud { padding: 6px 8px; margin: 8px 0 10px; }
+        .score { font-size: 17px; }
+        .stat { font-size: 12.5px; }
+        .hud-actions button { min-height: 34px; padding: 5px 9px; }
         .age-section { margin-bottom: 12px; }
         button.age-toggle { padding: 10px 12px; font-size: 16px; }
         tbody td { padding: 10px 10px 12px; }
         .blank { margin-bottom: 10px; }
         .blank input { font-size: 16px; min-height: 48px; padding: 11px 12px; }
         td .domain-label { font-size: 13px; }
-        .age-section, .vax-section { scroll-margin-top: 168px; }
+        .age-section, .vax-section { scroll-margin-top: 128px; }
         .recall-row { flex-wrap: wrap; gap: 2px 10px; }
         .recall-age { flex-basis: 76px; }
       }
@@ -499,17 +409,12 @@
       <header class="intro">
         <h1>Developmental Milestones — Fill in the Table</h1>
         <p>
-          The full milestones chart, <strong>2 months to 5 years</strong>, with every milestone
-          blanked out — one collapsible table per age, so you can fold away the ages you've got
-          down; each age header shows your progress for that age. Below the milestones, the
-          <strong>pediatric vaccine schedule</strong> is blanked out the same way, mnemonics
-          included. Type each answer from memory — answers check as you type, and you don't need
-          the chart's exact words: an approximate phrasing in your own words counts as long as the
-          key ideas are there. If a cell has more than one blank, its milestones can go in
-          any order — each one just has to appear once in that cell. <strong>Enter</strong>
-          jumps to the next blank. Or switch to <strong>High yield only</strong> to drill just
-          the 45 milestones your Anki deck has dedicated cards for — that toggle scopes the
-          milestones only; the vaccines always show the full schedule.
+          The full milestones chart, <strong>2 months to 5 years</strong>, blanked out — one
+          collapsible table per age, with the <strong>pediatric vaccine schedule</strong>
+          blanked the same way below. Type from memory: checking is forgiving (your own
+          phrasing counts), a cell's milestones can go in any order, and <strong>Enter</strong>
+          jumps to the next blank. <strong>High yield only</strong> drills just the 45
+          milestones your Anki deck has cards for. Progress saves automatically on this device.
         </p>
       </header>
 
@@ -528,7 +433,6 @@
             <button id="checkBtn" type="button">Check all</button>
             <button id="revealBtn" type="button">Reveal answers</button>
             <button id="resetBtn" type="button" class="primary">Restart</button>
-            <button id="themeBtn" type="button" aria-label="Toggle dark or light theme">☾ Dark</button>
           </div>
         </div>
         <div class="bar" aria-hidden="true"><div id="barFill"></div></div>
@@ -1552,25 +1456,6 @@
           }
         });
       });
-
-      // ---------- Theme toggle ----------
-      var themeBtn = document.getElementById("themeBtn");
-      function effectiveTheme() {
-        var t = document.documentElement.getAttribute("data-theme");
-        if (t) return t;
-        return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      }
-      function paintThemeBtn() {
-        themeBtn.textContent = effectiveTheme() === "dark" ? "☀ Light" : "☾ Dark";
-      }
-      themeBtn.addEventListener("click", function () {
-        var next = effectiveTheme() === "dark" ? "light" : "dark";
-        document.documentElement.setAttribute("data-theme", next);
-        document.documentElement.style.colorScheme = next;
-        try { localStorage.setItem("mtq-theme", next); } catch (e) {}
-        paintThemeBtn();
-      });
-      paintThemeBtn();
 
       // ---------- Persistence (localStorage) ----------
       // The whole round — typed values, resolved states, mistakes, elapsed
