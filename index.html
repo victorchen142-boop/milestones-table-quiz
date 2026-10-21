@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="data:," />
+    <meta name="description" content="Fill-in-the-blank developmental milestones and pediatric vaccine schedule quiz — the chart, blanked out." />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f4ee" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#14181d" />
+    <script>
+      try {
+        var savedTheme = localStorage.getItem("mtq-theme");
+        if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+      } catch (e) {}
+    </script>
     <title>Milestones Table Quiz</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -68,6 +77,60 @@
           --d-lang-ink: #f0a79c;
           --d-social-ink: #a3d8a3;
         }
+      }
+      :root[data-theme="dark"] {
+          --bg: #14181d;
+          --surface: #1c2129;
+          --surface-2: #232a34;
+          --ink: #e8ecf1;
+          --ink-soft: #9aa6b2;
+          --line: #333c47;
+          --line-strong: #46525f;
+          --accent: #2dd4bf;
+          --accent-ink: #0b1512;
+          --good: #7bd88a;
+          --good-bg: #1e3524;
+          --bad: #ff9d94;
+          --bad-bg: #40231f;
+          --revealed-bg: #3a3115;
+          --revealed-ink: #f0d488;
+          --focus: #2dd4bf;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+          --d-gross: #1d2c3a;
+          --d-fine: #3a2f18;
+          --d-lang: #3a2320;
+          --d-social: #1f3320;
+          --d-gross-ink: #9cc8e8;
+          --d-fine-ink: #eec27a;
+          --d-lang-ink: #f0a79c;
+          --d-social-ink: #a3d8a3;
+      }
+      :root[data-theme="light"] {
+        --bg: #f7f4ee;
+        --surface: #fffdf9;
+        --surface-2: #f1ece2;
+        --ink: #1d2733;
+        --ink-soft: #55606c;
+        --line: #ddd5c6;
+        --line-strong: #c9bfa9;
+        --accent: #0f766e;
+        --accent-ink: #ffffff;
+        --good: #1e7d32;
+        --good-bg: #e3f2e4;
+        --bad: #b3261e;
+        --bad-bg: #fbe7e4;
+        --revealed-bg: #fdf3d7;
+        --revealed-ink: #7a5b00;
+        --focus: #0f766e;
+        --shadow: 0 1px 2px rgba(29, 39, 51, 0.06), 0 8px 24px rgba(29, 39, 51, 0.06);
+        --d-gross: #e8f1f8;
+        --d-fine: #fdf0dc;
+        --d-lang: #fbe9e7;
+        --d-social: #e6f3e6;
+        --d-gross-ink: #1d5b86;
+        --d-fine-ink: #8a5a00;
+        --d-lang-ink: #9c3a2e;
+        --d-social-ink: #2e6b2e;
       }
       * { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; }
@@ -353,6 +416,24 @@
       .mode-switch button + button { border-left: 1px solid var(--line-strong); }
       .blank.hidden-blank { display: none; }
 
+      .chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 10px; margin: -8px 0 12px; scrollbar-width: thin; }
+      .chip { flex: 0 0 auto; font-size: 13px; font-weight: 600; padding: 7px 12px; min-height: 36px; border-radius: 99px; }
+      .chip .n { color: var(--ink-soft); font-weight: 500; margin-left: 5px; font-variant-numeric: tabular-nums; }
+      .chip.done { border-color: var(--good); color: var(--good); background: var(--good-bg); }
+      .chip.done .n { color: var(--good); }
+      .age-section, .vax-section { scroll-margin-top: 112px; }
+      .age-progress.complete { color: var(--good); }
+      .age-head { display: flex; align-items: stretch; }
+      .age-head .age-toggle { flex: 1 1 auto; width: auto; }
+      button.check-section {
+        border: none; border-left: 1px solid var(--line); border-bottom: 1px solid var(--line);
+        border-radius: 0; background: var(--surface-2); font-size: 13px; padding: 0 14px; min-height: 48px;
+      }
+      .banner .sum-domains { margin-top: 8px; font-size: 14px; color: var(--ink-soft); }
+      .banner .sum-domains b { color: var(--ink); }
+      .banner .missed-list { margin: 10px 0 0; padding-left: 18px; color: var(--ink-soft); font-size: 14px; max-height: 220px; overflow: auto; }
+      .banner .missed-list b { color: var(--ink); }
+      .banner-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
       footer.note { margin-top: 16px; color: var(--ink-soft); font-size: 13.5px; }
 
       /* Phone: stack each age row into a card; domain becomes a label above its blanks. */
@@ -407,6 +488,7 @@
         .blank { margin-bottom: 10px; }
         .blank input { font-size: 16px; min-height: 48px; padding: 11px 12px; }
         td .domain-label { font-size: 13px; }
+        .age-section, .vax-section { scroll-margin-top: 168px; }
         .recall-row { flex-wrap: wrap; gap: 2px 10px; }
         .recall-age { flex-basis: 76px; }
       }
@@ -436,6 +518,7 @@
           <div class="score"><span id="scoreNum">0</span> <small>/ 83 correct</small></div>
           <div class="stat">Time <b id="timer">0:00</b></div>
           <div class="stat">Mistakes <b id="mistakes">0</b></div>
+          <div class="stat">First-try <b id="firstTry">—</b></div>
           <div class="hud-actions">
             <div class="mode-switch" role="group" aria-label="Quiz mode">
               <button id="modeAll" type="button" aria-pressed="true">All milestones</button>
@@ -445,19 +528,27 @@
             <button id="checkBtn" type="button">Check all</button>
             <button id="revealBtn" type="button">Reveal answers</button>
             <button id="resetBtn" type="button" class="primary">Restart</button>
+            <button id="themeBtn" type="button" aria-label="Toggle dark or light theme">☾ Dark</button>
           </div>
         </div>
         <div class="bar" aria-hidden="true"><div id="barFill"></div></div>
       </div>
 
+      <nav class="chips" id="chips" aria-label="Jump to an age section"></nav>
+
       <div class="banner" id="banner" role="status">
         <h2 id="bannerTitle"></h2>
         <p id="bannerText"></p>
+        <div id="bannerDetail"></div>
+        <div class="banner-actions">
+          <button id="retryMissedBtn" type="button">Retry missed only</button>
+          <button id="bannerRestartBtn" type="button" class="primary">Restart full quiz</button>
+        </div>
       </div>
 
       <div id="milestoneSections"></div>
 
-      <section class="vax-section" aria-label="Pediatric vaccine schedule quiz">
+      <section class="vax-section" id="vaxSection" aria-label="Pediatric vaccine schedule quiz">
         <h2 class="vax-title">Vaccines — Pediatric Schedule</h2>
         <p class="vax-sub">
           Same drill: every vaccine due at each age is blanked out — any order within the
@@ -508,7 +599,12 @@
         that one answer (anything you typed stays in the blank, with the answer
         underneath it) and leaves the rest of the table untouched. On Reveal answers,
         anything already typed stays in its blank and the correct answer appears
-        underneath it.
+        underneath it. Your progress saves automatically on this device — close
+        the tab and pick up right where you left off. The chips under the score
+        jump straight to any age, each age has its own Check button, and a
+        section folds itself away once you've finished it. When a round ends
+        you get a first-try breakdown by area plus a list of everything you
+        missed, with a button to retry just those blanks.
       </footer>
     </div>
 
@@ -734,7 +830,7 @@
 
       function renderProg(p) { if (p.el) p.el.textContent = p.done + "/" + p.total; }
       function newProg(el) {
-        var p = { done: 0, total: 0, el: el || null };
+        var p = { done: 0, total: 0, resolved: 0, el: el || null };
         progGroups.push(p);
         return p;
       }
@@ -772,6 +868,7 @@
           placeholder0: placeholder,
           active: true,
           matched: null,
+          everWrong: false,
           state: "open" // open | correct | revealed
         };
         blanks.push(b);
@@ -805,7 +902,16 @@
         toggle.appendChild(chev);
         toggle.appendChild(nameEl);
         toggle.appendChild(progEl);
+        var checkSecBtn = document.createElement("button");
+        checkSecBtn.type = "button";
+        checkSecBtn.className = "check-section";
+        checkSecBtn.textContent = "Check";
+        checkSecBtn.setAttribute("aria-label", "Check the " + age + " section");
+        (function (sec) {
+          checkSecBtn.addEventListener("click", function () { doCheckSection(sec); });
+        })(section);
         head.appendChild(toggle);
+        head.appendChild(checkSecBtn);
         section.appendChild(head);
         var prog = newProg(progEl);
         toggle.addEventListener("click", function () {
@@ -971,8 +1077,55 @@
           if (!cellPools[b.cellKey]) cellPools[b.cellKey] = [];
           cellPools[b.cellKey].push({ milestone: b.milestone, variants: b.variants });
         });
+        // Blanks already resolved (kept correct in a retry-missed round, or
+        // restored from a save) hold their matched milestone out of the pool.
+        blanks.forEach(function (b) {
+          if (!b.active || b.state === "open" || !b.matched) return;
+          var pool = cellPools[b.cellKey] || [];
+          for (var i = 0; i < pool.length; i++) {
+            if (pool[i].milestone === b.matched) { pool.splice(i, 1); break; }
+          }
+        });
       }
       initPools();
+
+      // ---------- Age jump chips ----------
+      var chipEls = [];
+      (function buildChips() {
+        var nav = document.getElementById("chips");
+        var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        function jumpTo(el) {
+          el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        }
+        ages.forEach(function (age) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "chip";
+          btn.appendChild(document.createTextNode(age));
+          var n = document.createElement("span");
+          n.className = "n";
+          btn.appendChild(n);
+          btn.addEventListener("click", function () {
+            var sec = ageRows[age].section;
+            sec.classList.remove("collapsed");
+            var t = sec.querySelector(".age-toggle");
+            if (t) t.setAttribute("aria-expanded", "true");
+            jumpTo(sec);
+          });
+          nav.appendChild(btn);
+          chipEls.push({ el: btn, n: n, age: age });
+        });
+        var vbtn = document.createElement("button");
+        vbtn.type = "button";
+        vbtn.className = "chip";
+        vbtn.appendChild(document.createTextNode("Vaccines"));
+        var vn = document.createElement("span");
+        vn.className = "n";
+        vbtn.appendChild(vn);
+        vbtn.addEventListener("click", function () { jumpTo(document.getElementById("vaxSection")); });
+        nav.appendChild(vbtn);
+        chipEls.push({ el: vbtn, n: vn, age: null });
+      })();
 
       // ---------- Game state ----------
       var correctCount = 0;
@@ -981,15 +1134,19 @@
       var timerId = null;
       var finished = false;
       var hintsOn = false;
+      var lastElapsed = 0;
       var highYieldMode = false;
 
       var scoreNum = document.getElementById("scoreNum");
       var barFill = document.getElementById("barFill");
       var timerEl = document.getElementById("timer");
       var mistakesEl = document.getElementById("mistakes");
+      var firstTryEl = document.getElementById("firstTry");
       var banner = document.getElementById("banner");
       var bannerTitle = document.getElementById("bannerTitle");
       var bannerText = document.getElementById("bannerText");
+      var bannerDetail = document.getElementById("bannerDetail");
+      var retryMissedBtn = document.getElementById("retryMissedBtn");
       var modeAllBtn = document.getElementById("modeAll");
       var modeHYBtn = document.getElementById("modeHY");
       var scoreSmall = document.querySelector(".score small");
@@ -1003,25 +1160,58 @@
         var m = Math.floor(sec / 60), s = sec % 60;
         return m + ":" + (s < 10 ? "0" : "") + s;
       }
+      function runTimer() {
+        if (timerId) return;
+        timerId = setInterval(function () { timerEl.textContent = elapsedText(); }, 500);
+      }
       function startTimer() {
         if (startedAt !== null) return;
-        startedAt = Date.now();
-        timerId = setInterval(function () {
-          timerEl.textContent = fmtTime(Math.floor((Date.now() - startedAt) / 1000));
-        }, 500);
+        startedAt = Date.now() - lastElapsed * 1000;
+        runTimer();
       }
       function stopTimer() {
+        if (startedAt !== null) lastElapsed = Math.floor((Date.now() - startedAt) / 1000);
         if (timerId) clearInterval(timerId);
         timerId = null;
       }
+      function currentElapsed() {
+        if (startedAt === null) return lastElapsed;
+        return Math.floor((Date.now() - startedAt) / 1000);
+      }
       function elapsedText() {
-        if (startedAt === null) return "0:00";
-        return fmtTime(Math.floor((Date.now() - startedAt) / 1000));
+        return fmtTime(currentElapsed());
       }
       function refreshHud() {
         scoreNum.textContent = correctCount;
         mistakesEl.textContent = mistakeCount;
         barFill.style.width = (TOTAL ? (correctCount / TOTAL) * 100 : 0) + "%";
+        var resolved = 0, clean = 0;
+        var ageStat = {};
+        var vaxStat = { r: 0, t: 0 };
+        blanks.forEach(function (b) {
+          if (!b.active) return;
+          var st = b.kind === "vaccine" ? vaxStat : (ageStat[b.milestone.age] = ageStat[b.milestone.age] || { r: 0, t: 0 });
+          st.t++;
+          if (b.state !== "open") {
+            st.r++;
+            resolved++;
+            if (b.state === "correct" && !b.everWrong) clean++;
+          }
+        });
+        firstTryEl.textContent = resolved ? Math.round((clean / resolved) * 100) + "%" : "—";
+        chipEls.forEach(function (chip) {
+          var st = chip.age ? ageStat[chip.age] : vaxStat;
+          var sec = chip.age ? ageRows[chip.age].section : null;
+          chip.el.style.display = sec && sec.classList.contains("section-hidden") ? "none" : "";
+          chip.n.textContent = st ? st.r + "/" + st.t : "";
+          chip.el.classList.toggle("done", !!st && st.t > 0 && st.r === st.t);
+        });
+        Object.keys(ageRows).forEach(function (age) {
+          var st = ageStat[age];
+          var el = ageRows[age].section.querySelector(".age-progress");
+          if (el) el.classList.toggle("complete", !!st && st.t > 0 && st.r === st.t);
+        });
+        saveProgress();
       }
       function nextOpen(fromIdx) {
         for (var i = fromIdx + 1; i < blanks.length; i++) {
@@ -1049,20 +1239,13 @@
         b.input.value = matched.text;
         b.input.disabled = true;
         correctCount++;
-        if (b.prog) { b.prog.done++; renderProg(b.prog); }
+        if (b.prog) { b.prog.done++; b.prog.resolved++; renderProg(b.prog); }
         refreshHud();
+        maybeCollapse(b);
         if (correctCount === TOTAL) {
           finished = true;
           stopTimer();
-          banner.classList.remove("revealed");
-          banner.classList.add("show");
-          bannerTitle.textContent = highYieldMode
-            ? "High-yield set complete — all " + TOTAL + " blanks"
-            : "Full table complete — all " + TOTAL + " blanks";
-          bannerText.innerHTML =
-            "Finished in <b>" + elapsedText() + "</b> with <b>" + mistakeCount +
-            "</b> mistake" + (mistakeCount === 1 ? "" : "s") +
-            ". Hit Restart to run it again from a blank table.";
+          showSummary(false);
         } else {
           var nxt = nextOpen(idx);
           if (nxt) { ensureVisible(nxt); nxt.input.focus(); }
@@ -1071,10 +1254,20 @@
       function markWrong(b) {
         // Flag only — checking never prints the answer; the blank's own
         // Reveal button (visible while it's flagged) is what shows it.
+        b.everWrong = true;
+        b.note.textContent = "Not quite — try again.";
         b.wrap.classList.add("wrong");
         b.input.classList.remove("shake");
         void b.input.offsetWidth;
         b.input.classList.add("shake");
+      }
+      function maybeCollapse(b) {
+        if (b.kind !== "milestone" || !b.sectionEl || !b.prog) return;
+        if (b.prog.total > 0 && b.prog.resolved >= b.prog.total) {
+          b.sectionEl.classList.add("collapsed");
+          var btn = b.sectionEl.querySelector(".age-toggle");
+          if (btn) btn.setAttribute("aria-expanded", "false");
+        }
       }
       function revealOne(b) {
         // Reveal just this blank: prefer its own milestone if that entry is
@@ -1088,6 +1281,7 @@
         if (!entry && pool.length) entry = pool[0];
         if (entry) consumePoolMatch(b, entry);
         var answer = entry ? entry.milestone.text : b.milestone.text;
+        b.matched = entry ? entry.milestone : b.milestone;
         b.state = "revealed";
         b.wrap.classList.remove("wrong");
         b.wrap.classList.add("revealed");
@@ -1095,17 +1289,117 @@
           b.note.textContent = "Answer: " + answer;
         } else {
           b.input.value = answer;
+          b.note.textContent = "";
         }
         b.input.disabled = true;
+        if (b.prog) b.prog.resolved++;
+        maybeCollapse(b);
         var anyOpen = blanks.some(function (x) { return x.active && x.state === "open"; });
         if (!anyOpen) stopTimer();
+        saveProgress();
       }
+
+      // ---------- End-of-round summary ----------
+      function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+      function showSummary(revealedAll) {
+        var resolved = 0, clean = 0;
+        var missed = [];
+        var domStat = {};
+        var vaxStat = { clean: 0, total: 0 };
+        blanks.forEach(function (b) {
+          if (!b.active) return;
+          var st = b.kind === "vaccine" ? vaxStat : (domStat[b.milestone.domain] = domStat[b.milestone.domain] || { clean: 0, total: 0 });
+          st.total++;
+          if (b.state !== "open") {
+            resolved++;
+            if (b.state === "correct" && !b.everWrong) { clean++; st.clean++; }
+          }
+          if (b.everWrong || b.state === "revealed") missed.push(b);
+        });
+        banner.classList.add("show");
+        banner.classList.toggle("revealed", revealedAll);
+        bannerTitle.textContent = revealedAll
+          ? "Answers revealed"
+          : highYieldMode
+            ? "High-yield set complete — all " + TOTAL + " blanks"
+            : "Full table complete — all " + TOTAL + " blanks";
+        var pct = resolved ? Math.round((clean / resolved) * 100) : 0;
+        bannerText.innerHTML =
+          (revealedAll
+            ? "You filled in <b>" + correctCount + " of " + TOTAL + "</b> on your own"
+            : "Finished") +
+          (startedAt !== null || lastElapsed > 0 ? " in <b>" + elapsedText() + "</b>" : "") +
+          " with <b>" + mistakeCount + "</b> mistake" + (mistakeCount === 1 ? "" : "s") +
+          ". First-try accuracy: <b>" + pct + "%</b> (" + clean + " of " + resolved + " resolved cleanly — no wrong try, no reveal).";
+        var parts = [];
+        DOMAINS.forEach(function (d) {
+          var st = domStat[d];
+          if (st && st.total) parts.push(esc(d) + " <b>" + st.clean + "/" + st.total + "</b>");
+        });
+        if (vaxStat.total) parts.push("Vaccines <b>" + vaxStat.clean + "/" + vaxStat.total + "</b>");
+        var html = '<p class="sum-domains">First-try by area: ' + parts.join(" · ") + "</p>";
+        if (missed.length) {
+          html += '<ul class="missed-list">' + missed.map(function (b) {
+            var where = b.kind === "vaccine"
+              ? "Vaccines · " + b.cellKey.split("|")[1]
+              : b.milestone.age + " · " + b.milestone.domain;
+            var ans = b.matched ? b.matched.text : b.milestone.text;
+            return "<li><b>" + esc(where) + "</b> — " + esc(ans) + "</li>";
+          }).join("") + "</ul>";
+        }
+        bannerDetail.innerHTML = html;
+        retryMissedBtn.style.display = missed.length ? "" : "none";
+        banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      // Retry just the blanks that took a wrong try or a reveal; everything
+      // already correct stays locked in and keeps its score.
+      function retryMissed() {
+        var retry = blanks.filter(function (b) {
+          return b.active && (b.everWrong || b.state === "revealed");
+        });
+        if (!retry.length) return;
+        finished = false;
+        mistakeCount = 0;
+        startedAt = null;
+        lastElapsed = 0;
+        stopTimer();
+        timerEl.textContent = "0:00";
+        banner.classList.remove("show", "revealed");
+        retry.forEach(function (b) {
+          if (b.state === "correct") {
+            correctCount--;
+            if (b.prog) b.prog.done--;
+          }
+          if (b.state !== "open" && b.prog) b.prog.resolved--;
+          b.state = "open";
+          b.matched = null;
+          b.everWrong = false;
+          b.wrap.classList.remove("correct", "revealed", "wrong");
+          b.input.disabled = false;
+          b.input.value = "";
+          b.note.textContent = "";
+          b.input.placeholder = hintsOn ? hintFor(b.milestone.text) : b.placeholder0;
+          if (b.prog) renderProg(b.prog);
+        });
+        initPools();
+        refreshHud();
+        var first = null;
+        blanks.forEach(function (b) { if (!first && retry.indexOf(b) !== -1) first = b; });
+        if (first) { ensureVisible(first); first.input.focus(); }
+        saveProgress();
+      }
+      retryMissedBtn.addEventListener("click", retryMissed);
+      document.getElementById("bannerRestartBtn").addEventListener("click", function () {
+        setMode(highYieldMode ? "hy" : "all", true);
+      });
 
       blanks.forEach(function (b, idx) {
         b.input.addEventListener("input", function () {
           if (finished) return;
           startTimer();
           b.wrap.classList.remove("wrong");
+          scheduleSave();
           var match = b.input.value.trim() ? findPoolMatch(b, b.input.value) : null;
           if (match) {
             markCorrect(b, idx, match);
@@ -1129,11 +1423,12 @@
         });
       });
 
-      document.getElementById("checkBtn").addEventListener("click", function () {
+      function doCheck(filterFn) {
         if (finished) return;
         var newMistakes = 0;
         blanks.forEach(function (b) {
           if (!b.active || b.state !== "open") return;
+          if (filterFn && !filterFn(b)) return;
           var val = b.input.value.trim();
           if (!val) { b.wrap.classList.remove("wrong"); return; }
           if (!findPoolMatch(b, val)) {
@@ -1145,38 +1440,42 @@
           mistakeCount += newMistakes;
           refreshHud();
         }
+        saveProgress();
+      }
+      function doCheckSection(sectionEl) {
+        doCheck(function (b) { return b.sectionEl === sectionEl; });
+      }
+      document.getElementById("checkBtn").addEventListener("click", function () {
+        doCheck(null);
       });
 
       document.getElementById("revealBtn").addEventListener("click", function () {
         if (finished) return;
         finished = true;
         stopTimer();
-        var gotOwn = correctCount;
         blanks.forEach(function (b) {
           if (b.active && b.state === "open") {
             var pool = cellPools[b.cellKey] || [];
             var entry = pool.length ? pool.shift() : null;
+            b.matched = entry ? entry.milestone : b.milestone;
             b.state = "revealed";
             b.wrap.classList.remove("wrong");
             b.wrap.classList.add("revealed");
-            var answer = entry ? entry.milestone.text : b.milestone.text;
+            var answer = b.matched.text;
             if (b.input.value.trim()) {
               // Keep whatever was typed in the blank — right or wrong, it
               // stays put and the answer appears underneath it.
               b.note.textContent = "Answer: " + answer;
             } else {
               b.input.value = answer;
+              b.note.textContent = "";
             }
             b.input.disabled = true;
+            if (b.prog) b.prog.resolved++;
           }
         });
-        banner.classList.add("show", "revealed");
-        bannerTitle.textContent = "Answers revealed";
-        bannerText.innerHTML =
-          "You filled in <b>" + gotOwn + " of " + TOTAL + "</b> on your own" +
-          (startedAt !== null ? " in <b>" + elapsedText() + "</b>" : "") +
-          " with <b>" + mistakeCount + "</b> mistake" + (mistakeCount === 1 ? "" : "s") +
-          ". The ones you missed are highlighted — anything you had typed stays in its blank, with the answer underneath it. Restart when you're ready to try the blank table again.";
+        showSummary(true);
+        saveProgress();
       });
 
       document.getElementById("resetBtn").addEventListener("click", function () {
@@ -1195,19 +1494,22 @@
         correctCount = 0;
         mistakeCount = 0;
         startedAt = null;
+        lastElapsed = 0;
         stopTimer();
         timerEl.textContent = "0:00";
         banner.classList.remove("show", "revealed");
+        bannerDetail.innerHTML = "";
         modeAllBtn.setAttribute("aria-pressed", highYieldMode ? "false" : "true");
         modeHYBtn.setAttribute("aria-pressed", highYieldMode ? "true" : "false");
         var ageCounts = {};
         var cellActive = {};
         TOTAL = 0;
-        progGroups.forEach(function (p) { p.done = 0; p.total = 0; });
+        progGroups.forEach(function (p) { p.done = 0; p.total = 0; p.resolved = 0; });
         blanks.forEach(function (b) {
           b.active = b.kind === "vaccine" || !highYieldMode || b.hy;
           b.state = "open";
           b.matched = null;
+          b.everWrong = false;
           b.wrap.classList.remove("correct", "revealed", "wrong");
           b.wrap.classList.toggle("hidden-blank", !b.active);
           b.input.disabled = false;
@@ -1251,7 +1553,140 @@
         });
       });
 
+      // ---------- Theme toggle ----------
+      var themeBtn = document.getElementById("themeBtn");
+      function effectiveTheme() {
+        var t = document.documentElement.getAttribute("data-theme");
+        if (t) return t;
+        return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      function paintThemeBtn() {
+        themeBtn.textContent = effectiveTheme() === "dark" ? "☀ Light" : "☾ Dark";
+      }
+      themeBtn.addEventListener("click", function () {
+        var next = effectiveTheme() === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        document.documentElement.style.colorScheme = next;
+        try { localStorage.setItem("mtq-theme", next); } catch (e) {}
+        paintThemeBtn();
+      });
+      paintThemeBtn();
+
+      // ---------- Persistence (localStorage) ----------
+      // The whole round — typed values, resolved states, mistakes, elapsed
+      // time, mode, hints — is saved on this device and restored on load, so
+      // a closed tab never loses a run. Restart / mode switches overwrite it.
+      var SAVE_KEY = "mtq-save-v1";
+      var saveReady = false;
+      var saveTimerId = null;
+      function scheduleSave() {
+        if (saveTimerId) clearTimeout(saveTimerId);
+        saveTimerId = setTimeout(saveProgress, 400);
+      }
+      function saveProgress() {
+        if (!saveReady) return;
+        try {
+          var data = {
+            v: 1,
+            mode: highYieldMode ? "hy" : "all",
+            hints: hintsOn,
+            mistakes: mistakeCount,
+            elapsed: currentElapsed(),
+            blanks: blanks.map(function (b) {
+              return {
+                v: b.input.value,
+                s: b.state,
+                m: b.matched ? b.matched.text : null,
+                w: b.everWrong ? 1 : 0
+              };
+            })
+          };
+          localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+        } catch (e) {}
+      }
+      function restoreProgress() {
+        var data = null;
+        try {
+          var raw = localStorage.getItem(SAVE_KEY);
+          if (raw) data = JSON.parse(raw);
+        } catch (e) {}
+        if (!data || data.v !== 1 || !data.blanks || data.blanks.length !== blanks.length) {
+          saveReady = true;
+          return;
+        }
+        setMode(data.mode === "hy" ? "hy" : "all", false);
+        if (data.hints && !hintsOn) document.getElementById("hintBtn").click();
+        mistakeCount = data.mistakes || 0;
+        lastElapsed = data.elapsed || 0;
+        blanks.forEach(function (b, i) {
+          var s = data.blanks[i];
+          if (!s || !b.active) return;
+          b.everWrong = !!s.w;
+          if (s.s === "correct" || s.s === "revealed") {
+            // Find the milestone this blank resolved to (its own, or a
+            // cell-mate's via the pool rule) to hold it out of the pool.
+            var target = null;
+            blanks.forEach(function (x) {
+              if (x.cellKey === b.cellKey && x.milestone.text === s.m) target = x.milestone;
+            });
+            if (!target) target = b.milestone;
+            b.matched = target;
+            b.state = s.s;
+            b.wrap.classList.add(s.s === "correct" ? "correct" : "revealed");
+            if (s.s === "correct") {
+              b.input.value = target.text;
+              correctCount++;
+              if (b.prog) b.prog.done++;
+            } else if (s.v && s.v !== target.text) {
+              b.input.value = s.v;
+              b.note.textContent = "Answer: " + target.text;
+            } else {
+              b.input.value = target.text;
+            }
+            b.input.disabled = true;
+            if (b.prog) { b.prog.resolved++; renderProg(b.prog); }
+          } else {
+            b.input.value = s.v || "";
+            if (b.everWrong && b.input.value) {
+              b.wrap.classList.add("wrong");
+              b.note.textContent = "Not quite — try again.";
+            }
+          }
+        });
+        initPools();
+        var anyOpen = blanks.some(function (b) { return b.active && b.state === "open"; });
+        timerEl.textContent = fmtTime(lastElapsed);
+        if (anyOpen) {
+          if (lastElapsed > 0) {
+            startedAt = Date.now() - lastElapsed * 1000;
+            runTimer();
+          }
+        } else {
+          finished = true;
+          var anyRevealed = blanks.some(function (b) { return b.active && b.state === "revealed"; });
+          showSummary(anyRevealed);
+        }
+        // Fold away sections that are fully resolved.
+        Object.keys(ageRows).forEach(function (age) {
+          var sec = ageRows[age].section;
+          var bs = blanks.filter(function (b) { return b.active && b.sectionEl === sec; });
+          if (bs.length && bs.every(function (b) { return b.state !== "open"; })) {
+            sec.classList.add("collapsed");
+            var t = sec.querySelector(".age-toggle");
+            if (t) t.setAttribute("aria-expanded", "false");
+          }
+        });
+        refreshHud();
+        saveReady = true;
+        saveProgress();
+      }
+      window.addEventListener("beforeunload", saveProgress);
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") saveProgress();
+      });
+
       setMode("all", false);
+      restoreProgress();
     </script>
   </body>
 </html>
