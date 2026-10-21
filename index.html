@@ -485,7 +485,7 @@
           <div class="recall-row"><span class="recall-age">12–15 mo</span><span>MMR + Varicella + Hep A + Hib/PCV boosters</span></div>
           <div class="recall-row"><span class="recall-age">15–18 mo</span><span>DTaP #4 + Hep A #2</span></div>
           <div class="recall-row"><span class="recall-age">4–6 yr</span><span>Very DIM</span></div>
-          <div class="recall-row"><span class="recall-age">11–12 yr</span><span>Tdap + MenACWY + HPV</span></div>
+          <div class="recall-row"><span class="recall-age">11–12 yr</span><span>Tdap + MenACWY + HPV (2 doses, 6 months apart)</span></div>
           <div class="recall-row"><span class="recall-age">16 yr</span><span>MenACWY booster</span></div>
         </div>
       </section>
@@ -500,7 +500,7 @@
         any of its blanks, and each one counts only once per cell. Vaccine schedule from the
         vaccine chart in the same doc, plus the high-yield additions: Hep A #2 at 15–18 months
         (6 months after the first dose) and the adolescent platform — Tdap + MenACWY + HPV at
-        11–12 years, MenACWY booster at 16 years. Within a vaccine row the shots can go in
+        11–12 years (HPV: 2 doses, 6 months apart), MenACWY booster at 16 years. Within a vaccine row the shots can go in
         any order, and simple forms count — “flu” for influenza, “chicken pox” for varicella.
         Check all only flags what's wrong — it never shows an answer. Once a blank is
         flagged wrong, a Reveal answer button appears under just that blank: it shows
@@ -932,7 +932,7 @@
         { age: "11–12 years", mnemonic: null, mnemonic_groups: null, mn_min: 0, items: [
           { display: "Tdap", aliases: ["tetanus diphtheria pertussis"], groups: [["tdap"]], min: 1 },
           { display: "MenACWY (Meningococcal)", aliases: ["meningococcal", "mcv4"], groups: [["menacwy", "meningococcal", "mcv4"]], min: 1 },
-          { display: "HPV (Human papillomavirus)", aliases: ["hpv", "gardasil"], groups: [["hpv", "gardasil", "papillomavirus"]], min: 1 }
+          { display: "HPV (Human papillomavirus) — 2 doses, 6 months apart", aliases: ["hpv", "gardasil"], groups: [["hpv", "gardasil", "papillomavirus"]], min: 1 }
         ]},
         { age: "16 years", mnemonic: null, mnemonic_groups: null, mn_min: 0, items: [
           { display: "MenACWY — booster", aliases: ["meningococcal", "menacwy", "mcv4"], groups: [["menacwy", "meningococcal", "mcv4"]], min: 1 }
@@ -1524,7 +1524,8 @@
         // by the blank's chart text.
         var byId = {};
         if (data.blanks.length && data.blanks[0].id) {
-          data.blanks.forEach(function (e) { if (e && e.id) byId[e.id] = e; });
+          var ID_ALIASES = { "vaccine|vax|11–12 years|items|HPV (Human papillomavirus)|1": "vaccine|vax|11–12 years|items|HPV (Human papillomavirus) — 2 doses, 6 months apart|1" };
+          data.blanks.forEach(function (e) { if (e && e.id) byId[ID_ALIASES[e.id] || e.id] = e; });
         } else if (data.blanks.length === 117) {
           var OLD_TAIL = ["DTaP #4", "Varicella #2", "DTaP #5 (final)", "IPV #4 (final)", "MMR #2", "Very DIM"];
           data.blanks.forEach(function (e, i) {
